@@ -79,4 +79,15 @@ export class LocalProvider implements DataProvider {
   async fileExists(relativePath: string): Promise<boolean> {
     return fs.existsSync(path.join(this.kbRoot, relativePath));
   }
+
+  /**
+   * Deletes a file on local filesystem.
+   * @param relativePath - Path relative to KB root.
+   */
+  async deleteFile(relativePath: string): Promise<void> {
+    const fullPath = path.join(this.kbRoot, relativePath);
+    if (fs.existsSync(fullPath)) {
+      fs.unlinkSync(fullPath);
+    }
+  }
 }

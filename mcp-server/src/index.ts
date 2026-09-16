@@ -152,6 +152,29 @@ const TOOL_DEFINITIONS = [
     },
   },
   {
+    name: 'archive_knowledge',
+    description: 'Archive a knowledge base file (moves to archive folder and marks as superseded).',
+    inputSchema: {
+      type: 'object' as const,
+      properties: {
+        path: { type: 'string', description: 'Relative path of the file to archive' },
+        reason: { type: 'string', description: 'Optional reason for archiving' },
+      },
+      required: ['path'],
+    },
+  },
+  {
+    name: 'restore_knowledge',
+    description: 'Restore an archived knowledge base file to its active location.',
+    inputSchema: {
+      type: 'object' as const,
+      properties: {
+        path: { type: 'string', description: 'Relative path of the archived file' },
+      },
+      required: ['path'],
+    },
+  },
+  {
     name: 'auto_context',
     description:
       'Smart orchestrator — automatically analyzes chat context and calls the most relevant KB tools. ' +
@@ -248,6 +271,16 @@ function registerHandlers(server: Server, handlers: ToolHandlers): void {
           return { content: [{ type: 'text' as const, text: await handlers.handleSaveLesson(lessonParams) }] };
         }
 
+        case 'archive_knowledge': {
+          const { path, reason } = args as { path: string; reason?: string };
+          return { content: [{ type: 'text' as const, text: await handlers.handleArchiveKnowledge(path, reason) }] };
+        }
+
+        case 'restore_knowledge': {
+          const { path } = args as { path: string };
+          return { content: [{ type: 'text' as const, text: await handlers.handleRestoreKnowledge(path) }] };
+        }
+
         case 'auto_context': {
           const { chatContext, projectName, taskType } = args as {
             chatContext: string;
@@ -336,6 +369,10 @@ async function executeToolIntent(intent: ToolIntent, handlers: ToolHandlers): Pr
           params.days as number | undefined,
           params.projectName as string | undefined
         );
+      case 'archive_knowledge':
+        return await handlers.handleArchiveKnowledge(params.path as string, params.reason as string | undefined);
+      case 'restore_knowledge':
+        return await handlers.handleRestoreKnowledge(params.path as string);
       default:
         return `Unknown tool: ${toolName}`;
     }

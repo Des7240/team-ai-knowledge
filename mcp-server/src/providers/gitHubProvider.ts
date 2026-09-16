@@ -279,4 +279,36 @@ export class GitHubProvider implements DataProvider {
 
     console.error(`[GitHubProvider] Cache warmed: ${this.cache.size} entries`);
   }
+
+  /**
+   * Deletes a file from GitHub repository.
+   * @param relativePath - Path relative to repo root.
+   */
+  async deleteFile(relativePath: string): Promise<void> {
+    const normalized = relativePath.replace(/\\/g, '/');
+
+    try {
+      const existing: GitHubContentResponse | null = await this.githubFetch(
+        `/contents/${normalized}?ref=${this.branch}`
+      );
+      if (!existing || !existing.sha) return;
+
+      const body = {
+        message: `chore: auto-delete ${normalized.split('/').pop()}`,
+        sha: existing.sha,
+        branch: this.branch,
+      };
+
+      await this.githubFetch(`/contents/${normalized}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+
+      this.cache.delete(`file:${normalized}`);
+      this.invalidateCache(`tree:`);
+    } catch (error: any) {
+      console.error(`[GitHubProvider.deleteFile] Error deleting ${normalized}:`, error.message);
+    }
+  }
 }

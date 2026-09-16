@@ -244,6 +244,80 @@ export function createToolHandlers(provider: DataProvider) {
     return `✅ Lesson learned successfully saved to: ${targetPath}`;
   }
 
+  /**
+   * Helper to determine archive path.
+   */
+  function getArchivePath(originalPath: string): string {
+    if (originalPath.startsWith('projects/')) {
+      const parts = originalPath.split('/');
+      if (parts[2] !== 'archive') {
+        parts.splice(2, 0, 'archive');
+        return parts.join('/');
+      }
+    } else if (originalPath.startsWith('_global/')) {
+      const parts = originalPath.split('/');
+      if (parts[1] !== 'archive') {
+        parts.splice(1, 0, 'archive');
+        return parts.join('/');
+      }
+    }
+    return originalPath;
+  }
+
+  /**
+   * Helper to determine restore path.
+   */
+  function getRestorePath(archivePath: string): string {
+    return archivePath.replace('/archive/', '/');
+  }
+
+  /**
+   * Handles archive_knowledge — archives a KB file.
+   * @param path - Path to file.
+   * @param reason - Optional reason for archiving.
+   * @returns Success message.
+   */
+  async function handleArchiveKnowledge(path: string, reason?: string): Promise<string> {
+    const doc = await readMarkdown(path);
+    if (!doc) return `Error: File not found at ${path}`;
+
+    doc.frontmatter.status = 'archived';
+    doc.frontmatter.superseded = true;
+    if (reason) doc.frontmatter.archive_reason = reason;
+
+    const newPath = getArchivePath(path);
+    if (newPath === path) return `Error: Could not determine archive path for ${path}`;
+
+    const content = matter.stringify(doc.content, doc.frontmatter);
+    await provider.writeFile(newPath, content);
+    await provider.deleteFile(path);
+
+    return `✅ Successfully archived to: ${newPath}`;
+  }
+
+  /**
+   * Handles restore_knowledge — restores an archived KB file.
+   * @param path - Path to archived file.
+   * @returns Success message.
+   */
+  async function handleRestoreKnowledge(path: string): Promise<string> {
+    const doc = await readMarkdown(path);
+    if (!doc) return `Error: File not found at ${path}`;
+
+    doc.frontmatter.status = 'active';
+    delete doc.frontmatter.superseded;
+    delete doc.frontmatter.archive_reason;
+
+    const newPath = getRestorePath(path);
+    if (newPath === path) return `Error: File does not appear to be in an archive path.`;
+
+    const content = matter.stringify(doc.content, doc.frontmatter);
+    await provider.writeFile(newPath, content);
+    await provider.deleteFile(path);
+
+    return `✅ Successfully restored to: ${newPath}`;
+  }
+
   return {
     readMarkdown,
     searchMarkdownFiles,
@@ -256,6 +330,8 @@ export function createToolHandlers(provider: DataProvider) {
     handleListRecentSessions,
     handleSaveSession,
     handleSaveLesson,
+    handleArchiveKnowledge,
+    handleRestoreKnowledge,
   };
 }
 

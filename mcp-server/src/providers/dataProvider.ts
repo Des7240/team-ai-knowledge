@@ -55,4 +55,10 @@ export interface DataProvider {
    * @returns True if exists.
    */
   fileExists(relativePath: string): Promise<boolean>;
+
+  /**
+   * Deletes a file.
+   * @param relativePath - Path relative to KB root.
+   */
+  deleteFile(relativePath: string): Promise<void>;
 }

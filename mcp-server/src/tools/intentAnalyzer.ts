@@ -13,7 +13,9 @@ export type KBToolName =
   | 'get_pattern'
   | 'get_decision'
   | 'get_lesson'
-  | 'list_recent_sessions';
+  | 'list_recent_sessions'
+  | 'archive_knowledge'
+  | 'restore_knowledge';
 
 /** Supported task types */
 export type TaskType = 'coding' | 'debug' | 'architecture' | 'general';
@@ -121,6 +123,22 @@ const KEYWORD_MAP: Record<KBToolName, KeywordEntry> = {
     ],
     baseScore: 3,
     taskTypeBoost: { general: 2 },
+  },
+  archive_knowledge: {
+    keywords: [
+      'archive', 'luu tru', 'lưu trữ', 'thung rac', 'thùng rác',
+      'xoa', 'xóa', 'delete', 'remove', 'superseded', 'cu', 'cũ'
+    ],
+    baseScore: 3,
+    taskTypeBoost: { general: 1 },
+  },
+  restore_knowledge: {
+    keywords: [
+      'restore', 'khoi phuc', 'khôi phục', 'phuc hoi', 'phục hồi',
+      'unarchive', 'active'
+    ],
+    baseScore: 3,
+    taskTypeBoost: { general: 1 },
   },
 };
 
@@ -248,6 +266,8 @@ export function analyzeIntent(input: AnalyzerInput): ToolIntent[] {
     'get_decision',
     'get_lesson',
     'list_recent_sessions',
+    'archive_knowledge',
+    'restore_knowledge',
   ];
 
   const scored: ToolIntent[] = [];
@@ -284,6 +304,12 @@ export function analyzeIntent(input: AnalyzerInput): ToolIntent[] {
       case 'list_recent_sessions':
         params.days = 3;
         if (projectName) params.projectName = projectName;
+        break;
+      case 'archive_knowledge':
+        params.path = searchQuery; // Basic fallback
+        break;
+      case 'restore_knowledge':
+        params.path = searchQuery; // Basic fallback
         break;
       // get_overview has no params
     }
