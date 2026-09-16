@@ -1,248 +1,253 @@
 /**
  * Tool Handlers — Extracted handler functions for each KB tool.
  *
- * These functions can be called directly by auto_context
- * without going through the MCP protocol layer.
+ * Uses DataProvider abstraction so handlers work with both
+ * local filesystem and GitHub API transparently.
  */
 
-import fs from 'fs';
-import path from 'path';
 import matter from 'gray-matter';
-
-/** KB root directory, resolved from environment */
-const KB_ROOT = path.resolve(process.env.KB_ROOT || path.join(import.meta.dirname, '..', '..'));
+import type { DataProvider, ParsedMarkdown } from '../providers/dataProvider.js';
 
 /**
- * Reads and parses a markdown file safely.
- * @param {string} relativePath - Relative path from KB root.
- * @returns {{ frontmatter: Record<string, any>, content: string } | null}
+ * Factory that creates all tool handler functions bound to a DataProvider.
+ * @param provider - DataProvider instance (LocalProvider or GitHubProvider).
+ * @returns Object containing all handler functions.
  */
-export function readMarkdown(relativePath: string) {
-  try {
-    const fullPath = path.join(KB_ROOT, relativePath);
-    if (!fs.existsSync(fullPath)) return null;
-    const raw = fs.readFileSync(fullPath, 'utf8');
-    const { data: frontmatter, content } = matter(raw);
-    return { frontmatter, content };
-  } catch (error) {
-    console.error(`[readMarkdown] Error reading ${relativePath}:`, error);
-    return null;
-  }
-}
+export function createToolHandlers(provider: DataProvider) {
 
-/**
- * Searches markdown files by keyword within KB.
- * @param {string} query - Search term.
- * @param {string} [projectName] - Optional project filter.
- * @returns {Array<{ path: string, title: string, snippet: string }>}
- */
-export function searchMarkdownFiles(query: string, projectName?: string) {
-  const results: Array<{ path: string; title: string; snippet: string }> = [];
-  const searchDir = projectName
-    ? path.join(KB_ROOT, 'projects', projectName)
-    : KB_ROOT;
-
-  if (!fs.existsSync(searchDir)) return results;
-
-  const files = fs.readdirSync(searchDir, { recursive: true }) as string[];
-  const queryLower = query.toLowerCase();
-
-  for (const file of files) {
-    if (!file.endsWith('.md')) continue;
-    const relPath = projectName
-      ? path.join('projects', projectName, file)
-      : file;
-    const doc = readMarkdown(relPath);
-    if (!doc) continue;
-
-    const fullText = (
-      JSON.stringify(doc.frontmatter) + ' ' + doc.content
-    ).toLowerCase();
-    if (fullText.includes(queryLower)) {
-      const title = doc.frontmatter.title || path.basename(file, '.md');
-      const snippet = doc.content.slice(0, 200).replace(/\n/g, ' ') + '...';
-      results.push({ path: relPath.replace(/\\/g, '/'), title, snippet });
+  /**
+   * Reads and parses a markdown file safely.
+   * @param relativePath - Relative path from KB root.
+   * @returns Parsed frontmatter + content, or null if not found.
+   */
+  async function readMarkdown(relativePath: string): Promise<ParsedMarkdown | null> {
+    try {
+      const raw = await provider.readFile(relativePath);
+      if (!raw) return null;
+      const { data: frontmatter, content } = matter(raw);
+      return { frontmatter, content };
+    } catch (error: any) {
+      console.error(`[readMarkdown] Error reading ${relativePath}:`, error.message);
+      return null;
     }
   }
 
-  return results;
-}
+  /**
+   * Searches markdown files by keyword within KB.
+   * @param query - Search term.
+   * @param projectName - Optional project filter.
+   * @returns Matching file summaries.
+   */
+  async function searchMarkdownFiles(
+    query: string,
+    projectName?: string
+  ): Promise<Array<{ path: string; title: string; snippet: string }>> {
+    const results: Array<{ path: string; title: string; snippet: string }> = [];
+    const searchDir = projectName ? `projects/${projectName}` : '';
 
-/**
- * Handles get_overview — returns KB overview and navigation map.
- * @returns {string} Overview content.
- */
-export function handleGetOverview(): string {
-  const mapDoc = readMarkdown('KNOWLEDGE_MAP.md');
-  const startDoc = readMarkdown('START_HERE.md');
-  return `# Overview\n\n${startDoc?.content || 'START_HERE.md not found.'}\n\n# Navigation Map\n\n${mapDoc?.content || 'KNOWLEDGE_MAP.md not found.'}`;
-}
+    const files = await provider.listFiles(searchDir, '*.md');
+    const queryLower = query.toLowerCase();
 
-/**
- * Handles get_project_context — returns project context/overview.
- * @param {string} projectName - Target project name.
- * @returns {string} Project context content.
- */
-export function handleGetProjectContext(projectName: string): string {
-  const doc = readMarkdown(`projects/${projectName}/context/overview.md`);
-  if (!doc) {
-    return `Project '${projectName}' context not found.`;
-  }
-  return `# Context: ${projectName}\n\n${doc.content}`;
-}
+    for (const filePath of files) {
+      const doc = await readMarkdown(filePath);
+      if (!doc) continue;
 
-/**
- * Handles search_knowledge — searches KB by query string.
- * @param {string} query - Keyword query.
- * @param {string} [projectName] - Optional project filter.
- * @returns {string} JSON stringified results.
- */
-export function handleSearchKnowledge(
-  query: string,
-  projectName?: string
-): string {
-  const matches = searchMarkdownFiles(query, projectName);
-  return matches.length
-    ? JSON.stringify(matches, null, 2)
-    : `No matches found for '${query}'.`;
-}
+      const fullText = (
+        JSON.stringify(doc.frontmatter) + ' ' + doc.content
+      ).toLowerCase();
 
-/**
- * Handles get_pattern — fetches design pattern by ID or query.
- * @param {string} patternId - Pattern ID or search query.
- * @returns {string} JSON stringified results.
- */
-export function handleGetPattern(patternId: string): string {
-  const matches = searchMarkdownFiles(patternId);
-  return JSON.stringify(matches, null, 2);
-}
+      if (fullText.includes(queryLower)) {
+        const baseName = filePath.split('/').pop() || filePath;
+        const title = doc.frontmatter.title || baseName.replace('.md', '');
+        const snippet = doc.content.slice(0, 200).replace(/\n/g, ' ') + '...';
+        results.push({ path: filePath, title, snippet });
+      }
+    }
 
-/**
- * Handles get_decision — fetches ADR by ID or query.
- * @param {string} decisionId - ADR ID or search query.
- * @returns {string} JSON stringified results.
- */
-export function handleGetDecision(decisionId: string): string {
-  const matches = searchMarkdownFiles(decisionId);
-  return JSON.stringify(matches, null, 2);
-}
-
-/**
- * Handles get_lesson — fetches lesson learned by ID or query.
- * @param {string} lessonId - Lesson ID or search query.
- * @returns {string} JSON stringified results.
- */
-export function handleGetLesson(lessonId: string): string {
-  const matches = searchMarkdownFiles(lessonId);
-  return JSON.stringify(matches, null, 2);
-}
-
-/**
- * Handles list_recent_sessions — lists recent session summaries.
- * @param {number} [_days] - Number of recent days (currently unused, searches all).
- * @param {string} [_projectName] - Optional project filter (currently unused).
- * @returns {string} JSON stringified results.
- */
-export function handleListRecentSessions(
-  _days?: number,
-  _projectName?: string
-): string {
-  const matches = searchMarkdownFiles('Session Summary');
-  return JSON.stringify(matches, null, 2);
-}
-
-/**
- * Handles save_session — saves a new session summary.
- * @param {object} params - Session data.
- * @returns {string} Success message with file path.
- */
-export function handleSaveSession(params: {
-  projectName: string;
-  title: string;
-  goals: string[];
-  filesChanged?: string[];
-  summary: string;
-}): string {
-  const { projectName, title, goals, filesChanged, summary } = params;
-
-  const date = new Date().toISOString().split('T')[0];
-  const fileName = `${date}-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.md`;
-  const targetDir = path.join(KB_ROOT, 'projects', projectName, 'sessions');
-
-  if (!fs.existsSync(targetDir)) {
-    fs.mkdirSync(targetDir, { recursive: true });
+    return results;
   }
 
-  const content = [
-    '---',
-    `id: SES-${date}-${Math.floor(100 + Math.random() * 900)}`,
-    `date: "${date}"`,
-    `author: AI-Agent`,
-    `project: ${projectName}`,
-    `goals: ${JSON.stringify(goals)}`,
-    `status: completed`,
-    `files_changed: ${JSON.stringify(filesChanged || [])}`,
-    `tags: [session, summary]`,
-    '---',
-    '',
-    `# Session Summary: ${title}`,
-    '',
-    summary,
-  ].join('\n');
-
-  const fullPath = path.join(targetDir, fileName);
-  fs.writeFileSync(fullPath, content, 'utf8');
-
-  return `✅ Session summary successfully saved to: projects/${projectName}/sessions/${fileName}`;
-}
-
-/**
- * Handles save_lesson — saves a new lesson learned.
- * @param {object} params - Lesson data.
- * @returns {string} Success message with file path.
- */
-export function handleSaveLesson(params: {
-  title: string;
-  scope: string;
-  severity: string;
-  resolution: string;
-  problem: string;
-  solution: string;
-}): string {
-  const { title, scope, severity, resolution, problem, solution } = params;
-
-  const date = new Date().toISOString().split('T')[0];
-  const lessonId = `LL-${date}-${Math.floor(100 + Math.random() * 900)}`;
-  const fileName = `${lessonId}-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.md`;
-  const targetDir = path.join(KB_ROOT, '_global', 'lessons');
-
-  if (!fs.existsSync(targetDir)) {
-    fs.mkdirSync(targetDir, { recursive: true });
+  /**
+   * Handles get_overview — returns KB overview and navigation map.
+   * @returns Overview content string.
+   */
+  async function handleGetOverview(): Promise<string> {
+    const mapDoc = await readMarkdown('KNOWLEDGE_MAP.md');
+    const startDoc = await readMarkdown('START_HERE.md');
+    return `# Overview\n\n${startDoc?.content || 'START_HERE.md not found.'}\n\n# Navigation Map\n\n${mapDoc?.content || 'KNOWLEDGE_MAP.md not found.'}`;
   }
 
-  const content = [
-    '---',
-    `id: ${lessonId}`,
-    `title: "${title}"`,
-    `date: "${date}"`,
-    `author: AI-Agent`,
-    `scope: ${scope}`,
-    `severity: ${severity}`,
-    `resolution: ${resolution}`,
-    `tags: [lesson, agent-generated]`,
-    '---',
-    '',
-    `# ${lessonId}: ${title}`,
-    '',
-    '## Problem',
-    problem,
-    '',
-    '## Solution',
-    solution,
-  ].join('\n');
+  /**
+   * Handles get_project_context — returns project context/overview.
+   * @param projectName - Target project name.
+   * @returns Project context content.
+   */
+  async function handleGetProjectContext(projectName: string): Promise<string> {
+    const doc = await readMarkdown(`projects/${projectName}/context/overview.md`);
+    if (!doc) {
+      return `Project '${projectName}' context not found.`;
+    }
+    return `# Context: ${projectName}\n\n${doc.content}`;
+  }
 
-  const fullPath = path.join(targetDir, fileName);
-  fs.writeFileSync(fullPath, content, 'utf8');
+  /**
+   * Handles search_knowledge — searches KB by query string.
+   * @param query - Keyword query.
+   * @param projectName - Optional project filter.
+   * @returns JSON stringified results.
+   */
+  async function handleSearchKnowledge(
+    query: string,
+    projectName?: string
+  ): Promise<string> {
+    const matches = await searchMarkdownFiles(query, projectName);
+    return matches.length
+      ? JSON.stringify(matches, null, 2)
+      : `No matches found for '${query}'.`;
+  }
 
-  return `✅ Lesson learned successfully saved to: _global/lessons/${fileName}`;
+  /**
+   * Handles get_pattern — fetches design pattern by ID or query.
+   * @param patternId - Pattern ID or search query.
+   * @returns JSON stringified results.
+   */
+  async function handleGetPattern(patternId: string): Promise<string> {
+    const matches = await searchMarkdownFiles(patternId);
+    return JSON.stringify(matches, null, 2);
+  }
+
+  /**
+   * Handles get_decision — fetches ADR by ID or query.
+   * @param decisionId - ADR ID or search query.
+   * @returns JSON stringified results.
+   */
+  async function handleGetDecision(decisionId: string): Promise<string> {
+    const matches = await searchMarkdownFiles(decisionId);
+    return JSON.stringify(matches, null, 2);
+  }
+
+  /**
+   * Handles get_lesson — fetches lesson learned by ID or query.
+   * @param lessonId - Lesson ID or search query.
+   * @returns JSON stringified results.
+   */
+  async function handleGetLesson(lessonId: string): Promise<string> {
+    const matches = await searchMarkdownFiles(lessonId);
+    return JSON.stringify(matches, null, 2);
+  }
+
+  /**
+   * Handles list_recent_sessions — lists recent session summaries.
+   * @param _days - Number of recent days (currently searches all).
+   * @param _projectName - Optional project filter.
+   * @returns JSON stringified results.
+   */
+  async function handleListRecentSessions(
+    _days?: number,
+    _projectName?: string
+  ): Promise<string> {
+    const matches = await searchMarkdownFiles('Session Summary');
+    return JSON.stringify(matches, null, 2);
+  }
+
+  /**
+   * Handles save_session — saves a new session summary.
+   * @param params - Session data.
+   * @returns Success message with file path.
+   */
+  async function handleSaveSession(params: {
+    projectName: string;
+    title: string;
+    goals: string[];
+    filesChanged?: string[];
+    summary: string;
+  }): Promise<string> {
+    const { projectName, title, goals, filesChanged, summary } = params;
+
+    const date = new Date().toISOString().split('T')[0];
+    const fileName = `${date}-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.md`;
+    const targetPath = `projects/${projectName}/sessions/${fileName}`;
+
+    const content = [
+      '---',
+      `id: SES-${date}-${Math.floor(100 + Math.random() * 900)}`,
+      `date: "${date}"`,
+      `author: AI-Agent`,
+      `project: ${projectName}`,
+      `goals: ${JSON.stringify(goals)}`,
+      `status: completed`,
+      `files_changed: ${JSON.stringify(filesChanged || [])}`,
+      `tags: [session, summary]`,
+      '---',
+      '',
+      `# Session Summary: ${title}`,
+      '',
+      summary,
+    ].join('\n');
+
+    await provider.writeFile(targetPath, content);
+    return `✅ Session summary successfully saved to: ${targetPath}`;
+  }
+
+  /**
+   * Handles save_lesson — saves a new lesson learned.
+   * @param params - Lesson data.
+   * @returns Success message with file path.
+   */
+  async function handleSaveLesson(params: {
+    title: string;
+    scope: string;
+    severity: string;
+    resolution: string;
+    problem: string;
+    solution: string;
+  }): Promise<string> {
+    const { title, scope, severity, resolution, problem, solution } = params;
+
+    const date = new Date().toISOString().split('T')[0];
+    const lessonId = `LL-${date}-${Math.floor(100 + Math.random() * 900)}`;
+    const fileName = `${lessonId}-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.md`;
+    const targetPath = `_global/lessons/${fileName}`;
+
+    const content = [
+      '---',
+      `id: ${lessonId}`,
+      `title: "${title}"`,
+      `date: "${date}"`,
+      `author: AI-Agent`,
+      `scope: ${scope}`,
+      `severity: ${severity}`,
+      `resolution: ${resolution}`,
+      `tags: [lesson, agent-generated]`,
+      '---',
+      '',
+      `# ${lessonId}: ${title}`,
+      '',
+      '## Problem',
+      problem,
+      '',
+      '## Solution',
+      solution,
+    ].join('\n');
+
+    await provider.writeFile(targetPath, content);
+    return `✅ Lesson learned successfully saved to: ${targetPath}`;
+  }
+
+  return {
+    readMarkdown,
+    searchMarkdownFiles,
+    handleGetOverview,
+    handleGetProjectContext,
+    handleSearchKnowledge,
+    handleGetPattern,
+    handleGetDecision,
+    handleGetLesson,
+    handleListRecentSessions,
+    handleSaveSession,
+    handleSaveLesson,
+  };
 }
+
+/** Type helper for the handlers object */
+export type ToolHandlers = ReturnType<typeof createToolHandlers>;

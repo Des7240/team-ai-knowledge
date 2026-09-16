@@ -54,20 +54,47 @@ npm run build
 cd ..
 ```
 
-### 3. Cấu hình MCP
+## 🚀 Chế độ hoạt động (Dual-Mode)
 
-Copy template và thay đường dẫn thực tế:
+MCP Server hỗ trợ 2 chế độ, tự động nhận diện thông qua Environment Variables:
+
+1. **Stdio Mode (Local)**: Dành cho phát triển. Server chạy dưới dạng local process, đọc/ghi trực tiếp vào filesystem.
+2. **HTTP Mode (Remote)**: Dành cho deploy (ví dụ: Render). Server chạy HTTP endpoint, đọc/ghi qua GitHub Contents API. Kích hoạt khi có biến môi trường `GITHUB_TOKEN`.
+
+### Hướng dẫn Deploy (HTTP Mode - Render)
+
+1. Tạo một Web Service trên Render.
+2. Set Build Command: `cd mcp-server && npm install && npm run build`
+3. Set Start Command: `cd mcp-server && node dist/index.js`
+4. Cấu hình Environment Variables:
+   - `GITHUB_TOKEN`: Fine-grained token có quyền đọc/ghi repo (Contents: Read & Write).
+   - `GITHUB_OWNER`: Tên tài khoản hoặc tổ chức chứa repo (vd: `your-username`).
+   - `GITHUB_REPO`: Tên repo (vd: `team-ai-knowledge`).
+
+### Cấu hình Client (.mcp.json)
+
+Copy template và thay thế tuỳ nhu cầu:
 
 ```bash
 cp .mcp.json.template .mcp.json
 ```
 
-Mở `.mcp.json` và thay `<YOUR_KB_PATH>` bằng đường dẫn tuyệt đối tới thư mục này.
+Trong IDE (Cursor/Windsurf), bạn có thể cấu hình trỏ tới Local (stdio) hoặc Remote (HTTP):
 
-### 4. Setup Git hooks (optional)
-
-```bash
-npm run setup:hooks
+```json
+{
+  "mcpServers": {
+    "team-knowledge-base-local": {
+      "command": "node",
+      "args": ["<YOUR_KB_PATH>/mcp-server/dist/index.js"],
+      "env": { "KB_ROOT": "<YOUR_KB_PATH>" }
+    },
+    "team-knowledge-base-remote": {
+      "type": "streamable-http",
+      "url": "https://<YOUR_RENDER_URL>/mcp"
+    }
+  }
+}
 ```
 
 ## 🛠️ Scripts

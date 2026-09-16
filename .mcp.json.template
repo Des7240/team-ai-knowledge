@@ -1,6 +1,6 @@
 {
   "mcpServers": {
-    "team-knowledge-base": {
+    "team-knowledge-base-local": {
       "command": "node",
       "args": [
         "<YOUR_KB_PATH>/mcp-server/dist/index.js"
@@ -8,6 +8,10 @@
       "env": {
         "KB_ROOT": "<YOUR_KB_PATH>"
       }
+    },
+    "team-knowledge-base-remote": {
+      "type": "streamable-http",
+      "url": "https://<YOUR_RENDER_URL>/mcp"
     }
   }
 }
