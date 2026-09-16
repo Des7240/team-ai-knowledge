@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hướng Dẫn Sử Dụng - Team AI Knowledge Base</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-color: #0b0f19;
+      --panel-bg: rgba(20, 27, 45, 0.7);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --primary: #6366f1;
+      --primary-glow: rgba(99, 102, 241, 0.4);
+      --accent: #ec4899;
+      --success: #10b981;
+      --font-main: 'Inter', sans-serif;
+      --font-code: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      font-family: var(--font-main);
+      line-height: 1.6;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 85% 30%, rgba(236, 72, 153, 0.15) 0%, transparent 50%);
+      background-attachment: fixed;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-color); }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+    /* Navigation */
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: rgba(11, 15, 25, 0.8);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--glass-border);
+      z-index: 1000;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-weight: 700;
+      font-size: 1.25rem;
+      background: linear-gradient(135deg, #a855f7, #ec4899);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: color 0.3s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--text-main);
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: 10rem 2rem 5rem;
+      text-align: center;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: 50px;
+      color: #818cf8;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    h1 {
+      font-size: 3.5rem;
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(to right, #fff, #94a3b8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      font-size: 1.25rem;
+      color: var(--text-muted);
+      margin-bottom: 2.5rem;
+    }
+
+    /* Glass Panels (Cards) */
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .glass-panel {
+      background: var(--panel-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 2.5rem;
+      margin-bottom: 3rem;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .glass-panel::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .glass-panel:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .glass-panel:hover::before {
+      opacity: 1;
+    }
+
+    h2 {
+      font-size: 1.75rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    /* Code Blocks */
+    pre {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      padding: 1.5rem;
+      overflow-x: auto;
+      font-family: var(--font-code);
+      font-size: 0.9rem;
+      color: #e2e8f0;
+      margin: 1.5rem 0;
+      position: relative;
+    }
+
+    code {
+      font-family: var(--font-code);
+      color: #38bdf8;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: white;
+      padding: 0.4rem 0.8rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.75rem;
+      transition: background 0.2s;
+    }
+
+    .copy-btn:hover { background: rgba(255, 255, 255, 0.2); }
+
+    /* Step Grid */
+    .step-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .step-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+
+    .step-number {
+      width: 32px;
+      height: 32px;
+      background: var(--primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      box-shadow: 0 0 15px var(--primary-glow);
+    }
+
+    /* Animations */
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0px); }
+    }
+
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    footer {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--glass-border);
+      margin-top: 4rem;
+    }
+
+    .tag {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--success);
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-left: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="logo">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+      Team AI KB
+    </div>
+    <div class="nav-links">
+      <a href="#setup">Cài đặt</a>
+      <a href="#workflow">Quy trình</a>
+      <a href="#mcp">MCP Tools</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="hero-badge">Trục 1: Knowledge Base System 🚀</div>
+    <h1>Đồng Bộ Ngữ Cảnh AI Cho Toàn Đội Ngũ</h1>
+    <p>Giải pháp lưu trữ tập trung, tìm kiếm thông minh qua chuẩn MCP. Giúp các AI Agent tự động đọc hiểu dự án và ghi nhận phiên làm việc mà không cần bạn phải thao tác tay.</p>
+  </header>
+
+  <main class="container">
+
+    <!-- SETUP SECTION -->
+    <section id="setup" class="glass-panel fade-in">
+      <h2>🛠️ Hướng Dẫn Cài Đặt Ban Đầu</h2>
+      <p>Thực hiện các bước dưới đây để kết nối IDE của bạn vào Knowledge Base dùng chung của team.</p>
+
+      <div class="step-grid">
+        <div class="step-card">
+          <div class="step-number">1</div>
+          <h3>Cài đặt Core (Root)</h3>
+          <p>Tại thư mục gốc của repo, cài đặt thư viện Node.js để chạy công cụ Validator và Indexer.</p>
+          <pre><code>npm install
+npm run setup:hooks</code></pre>
+        </div>
+        
+        <div class="step-card">
+          <div class="step-number">2</div>
+          <h3>Build MCP Server</h3>
+          <p>Do server được viết bằng TypeScript, bạn bắt buộc phải cài gói npm và biên dịch ra JavaScript trước khi dùng.</p>
+          <pre><code>cd mcp-server
+npm install
+npm run build</code></pre>
+        </div>
+
+        <div class="step-card">
+          <div class="step-number">3</div>
+          <h3>Kết nối IDE (Cursor / Windsurf)</h3>
+          <p>Mở Cài đặt > MCP trong IDE của bạn, thêm server loại <strong>Command</strong> (stdio):</p>
+          <pre><code>node d:/01_DU_AN/Work_Room/team-ai-knowledge/mcp-server/dist/index.js</code></pre>
+        </div>
+
+        <div class="step-card" style="border-color: var(--accent); box-shadow: 0 0 20px rgba(236,72,153,0.1);">
+          <div class="step-number" style="background: var(--accent); box-shadow: 0 0 15px rgba(236,72,153,0.5);">4</div>
+          <h3>Dành riêng cho Antigravity</h3>
+          <p>Để test công cụ này ngay trong Antigravity (do chưa hỗ trợ UI config MCP), bạn hãy chạy đoạn mã Client Node.js có sẵn:</p>
+          <pre><code>cd d:/01_DU_AN/Work_Room/team-ai-knowledge
+node scripts/test-client.js</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- WORKFLOW SECTION -->
+    <section id="workflow" class="glass-panel fade-in">
+      <h2>🔄 Quy Trình Làm Việc Hàng Ngày</h2>
+      <p>Dev không cần phải thay đổi thói quen code, AI Agent sẽ tự động làm phần việc nặng nhọc.</p>
+      
+      <div style="margin-top: 2rem;">
+        <h4 style="color: #38bdf8; margin-bottom: 0.5rem;">Khi bắt đầu phiên (Bắt đầu code):</h4>
+        <div style="background: rgba(56, 189, 248, 0.1); border-left: 4px solid #38bdf8; padding: 1rem; border-radius: 0 8px 8px 0; margin-bottom: 2rem;">
+          <p>AI Agent sẽ tự động nạp <code style="color: #e2e8f0;">AGENTS.md</code> và tự động gọi tool <strong>get_overview</strong> để đọc cấu trúc dự án. Bạn chỉ cần ra lệnh: <em>"Tôi muốn làm tính năng A cho project B"</em>.</p>
+        </div>
+
+        <h4 style="color: var(--accent); margin-bottom: 0.5rem;">Khi gặp lỗi khó hoặc cần tìm best practice:</h4>
+        <div style="background: rgba(236, 72, 153, 0.1); border-left: 4px solid var(--accent); padding: 1rem; border-radius: 0 8px 8px 0; margin-bottom: 2rem;">
+          <p>Bạn ra lệnh: <em>"Tìm xem team mình có quy chuẩn nào về xử lý lỗi không?"</em>. AI sẽ gọi tool <strong>search_knowledge</strong> tìm kiếm tự động toàn bộ Markdown và trả về kết quả ngay lập tức.</p>
+        </div>
+
+        <h4 style="color: var(--success); margin-bottom: 0.5rem;">Khi kết thúc phiên (Commit code):</h4>
+        <div style="background: rgba(16, 185, 129, 0.1); border-left: 4px solid var(--success); padding: 1rem; border-radius: 0 8px 8px 0;">
+          <p>Bạn ra lệnh: <em>"Tổng kết phiên làm việc"</em>. AI sẽ tự động phân tích các file vừa sửa và gọi tool <strong>save_session</strong> để sinh ra 1 file Markdown chuẩn hóa lưu vào thư mục dự án.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- MCP TOOLS SECTION -->
+    <section id="mcp" class="glass-panel fade-in">
+      <h2>🔌 Danh Sách 9 MCP Tools <span class="tag">Active</span></h2>
+      <p style="margin-bottom: 1.5rem;">Hệ thống cung cấp sẵn các công cụ giao tiếp chuẩn xác cho AI Agent qua stdio.</p>
+
+      <ul style="list-style: none; display: flex; flex-direction: column; gap: 1rem;">
+        <li style="padding: 1rem; background: rgba(255,255,255,0.03); border-radius: 8px; border: 1px solid var(--glass-border);">
+          <strong style="color: #818cf8;">get_overview</strong> — Lấy cái nhìn tổng quan về thư mục toàn bộ Knowledge Base.
+        </li>
+        <li style="padding: 1rem; background: rgba(255,255,255,0.03); border-radius: 8px; border: 1px solid var(--glass-border);">
+          <strong style="color: #818cf8;">get_project_context</strong> — Nạp context riêng lẻ cho 1 dự án cụ thể.
+        </li>
+        <li style="padding: 1rem; background: rgba(255,255,255,0.03); border-radius: 8px; border: 1px solid var(--glass-border);">
+          <strong style="color: var(--accent);">search_knowledge</strong> — Tìm kiếm linh hoạt Full-text Search vào chỉ mục `.index`.
+        </li>
+        <li style="padding: 1rem; background: rgba(255,255,255,0.03); border-radius: 8px; border: 1px solid var(--glass-border);">
+          <strong style="color: #38bdf8;">get_pattern / get_decision / get_lesson</strong> — Bộ 3 công cụ truy xuất tài liệu chuyên biệt (Patterns, ADRs, Lessons).
+        </li>
+        <li style="padding: 1rem; background: rgba(255,255,255,0.03); border-radius: 8px; border: 1px solid var(--glass-border);">
+          <strong style="color: var(--success);">save_session / save_lesson</strong> — Ghi trực tiếp tài liệu từ AI xuống máy tính với định dạng YAML schema chuẩn.
+        </li>
+      </ul>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>Xây dựng bởi <strong>Antigravity AI Agent</strong> — 2026</p>
+  </footer>
+
+  <script>
+    // Copy Code Button functionality
+    document.querySelectorAll('pre').forEach((block) => {
+      const button = document.createElement('button');
+      button.className = 'copy-btn';
+      button.innerText = 'Copy';
+      
+      button.addEventListener('click', () => {
+        const code = block.querySelector('code').innerText;
+        navigator.clipboard.writeText(code).then(() => {
+          button.innerText = 'Copied!';
+          setTimeout(() => { button.innerText = 'Copy'; }, 2000);
+        });
+      });
+      
+      block.appendChild(button);
+    });
+
+    // Intersection Observer for scroll animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-in').forEach((el) => {
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>
