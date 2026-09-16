@@ -11,7 +11,7 @@
     },
     "team-knowledge-base-remote": {
       "type": "streamable-http",
-      "url": "https://<YOUR_RENDER_URL>/mcp"
+      "serverURL": "https://<YOUR_RENDER_URL>/mcp"
     }
   }
 }

@@ -91,7 +91,7 @@ Trong IDE (Cursor/Windsurf), bạn có thể cấu hình trỏ tới Local (stdi
     },
     "team-knowledge-base-remote": {
       "type": "streamable-http",
-      "url": "https://<YOUR_RENDER_URL>/mcp"
+      "serverURL": "https://<YOUR_RENDER_URL>/mcp"
     }
   }
 }
