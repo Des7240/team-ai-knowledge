@@ -48,7 +48,7 @@ team-ai-knowledge/
 
 | Project | Status | Mô tả |
 |---------|--------|-------|
-| [example-project](./projects/example-project/) | template | Template — copy để tạo project mới |
+| [team-ai-knowledge](./projects/team-ai-knowledge/) | active | Knowledge về bản thân hệ thống KB |
 
 ---
 

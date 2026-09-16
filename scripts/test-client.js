@@ -44,7 +44,7 @@ async function testMCP() {
   const saveResult = await client.callTool({
     name: 'save_session',
     arguments: {
-      projectName: 'example-project',
+      projectName: 'team-ai-knowledge',
       title: 'Antigravity Test Session',
       goals: ['Test MCP Server in Antigravity'],
       summary: 'Hệ thống đã nhận lệnh và ghi file thành công qua giao thức MCP.'

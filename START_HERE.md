@@ -53,7 +53,7 @@ Khi user nói "tổng kết", "summarize", hoặc kết thúc → Gọi `save_se
 
 | Project | Đường dẫn | Mô tả |
 |---------|-----------|-------|
-| Example | [`projects/example-project/`](./projects/example-project/) | Template — copy để tạo project mới |
+| team-ai-knowledge | [`projects/team-ai-knowledge/`](./projects/team-ai-knowledge/) | Knowledge về bản thân hệ thống KB |
 
 > Thêm project mới vào đây sau khi tạo.
 
