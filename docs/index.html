@@ -290,6 +290,7 @@
     <div class="nav-links">
       <a href="#setup">Cài đặt</a>
       <a href="#workflow">Quy trình</a>
+      <a href="#solutions">Giải pháp</a>
       <a href="#mcp">MCP Tools</a>
     </div>
   </nav>
@@ -304,40 +305,51 @@
 
     <!-- SETUP SECTION -->
     <section id="setup" class="glass-panel fade-in">
-      <h2>🛠️ Hướng Dẫn Cài Đặt Ban Đầu</h2>
-      <p>Thực hiện các bước dưới đây để kết nối IDE của bạn vào Knowledge Base dùng chung của team.</p>
+      <h2>🛠️ Hướng Dẫn Cài Đặt Khởi Chạy</h2>
+      <p>Hệ thống hiện tại hỗ trợ <strong>Dual-Mode</strong>: chạy Local bằng tiến trình Stdio, hoặc chạy Remote bằng giao thức HTTP.</p>
 
       <div class="step-grid">
         <div class="step-card">
           <div class="step-number">1</div>
-          <h3>Cài đặt Core (Root)</h3>
-          <p>Tại thư mục gốc của repo, cài đặt thư viện Node.js để chạy công cụ Validator và Indexer.</p>
-          <pre><code>npm install
-npm run setup:hooks</code></pre>
+          <h3>Chế độ Local (Stdio)</h3>
+          <p>Thích hợp khi phát triển trực tiếp trên máy. Server đọc/ghi file từ ổ cứng nhanh chóng.</p>
+          <pre><code>{
+  "mcpServers": {
+    "team-kb": {
+      "command": "node",
+      "args": ["/path/to/dist/index.js"]
+    }
+  }
+}</code></pre>
         </div>
         
         <div class="step-card">
           <div class="step-number">2</div>
-          <h3>Build MCP Server</h3>
-          <p>Do server được viết bằng TypeScript, bạn bắt buộc phải cài gói npm và biên dịch ra JavaScript trước khi dùng.</p>
-          <pre><code>cd mcp-server
-npm install
-npm run build</code></pre>
+          <h3>Chế độ Remote (HTTP)</h3>
+          <p>Dành cho Cloud Deployment (Render). Kết nối qua giao thức Streamable HTTP.</p>
+          <pre><code>{
+  "mcpServers": {
+    "team-kb": {
+      "type": "streamable-http",
+      "serverURL": "https://team-kb-mcp.onrender.com/mcp"
+    }
+  }
+}</code></pre>
         </div>
 
         <div class="step-card">
           <div class="step-number">3</div>
-          <h3>Kết nối IDE (Cursor / Windsurf)</h3>
-          <p>Mở Cài đặt > MCP trong IDE của bạn, thêm server loại <strong>Command</strong> (stdio):</p>
-          <pre><code>node d:/01_DU_AN/Work_Room/team-ai-knowledge/mcp-server/dist/index.js</code></pre>
+          <h3>Cấu hình Biến Môi Trường (Remote)</h3>
+          <p>Nếu bạn triển khai lên Render, hệ thống cần quyền ghi vào repo GitHub của team.</p>
+          <pre><code>GITHUB_TOKEN=github_pat_...
+GITHUB_OWNER=username
+GITHUB_REPO=repo-name</code></pre>
         </div>
 
         <div class="step-card" style="border-color: var(--accent); box-shadow: 0 0 20px rgba(236,72,153,0.1);">
           <div class="step-number" style="background: var(--accent); box-shadow: 0 0 15px rgba(236,72,153,0.5);">4</div>
-          <h3>Dành riêng cho Antigravity</h3>
-          <p>Để test công cụ này ngay trong Antigravity (do chưa hỗ trợ UI config MCP), bạn hãy chạy đoạn mã Client Node.js có sẵn:</p>
-          <pre><code>cd d:/01_DU_AN/Work_Room/team-ai-knowledge
-node scripts/test-client.js</code></pre>
+          <h3>Tự Động Chuyển Đổi Mode</h3>
+          <p>Server rất thông minh! Nếu nhận diện thấy có <code>GITHUB_TOKEN</code>, nó tự động mở cổng HTTP. Ngược lại, nó sẽ khởi động ở Local mode.</p>
         </div>
       </div>
     </section>
@@ -365,12 +377,38 @@ node scripts/test-client.js</code></pre>
       </div>
     </section>
 
+    <!-- SOLUTIONS SECTION -->
+    <section id="solutions" class="glass-panel fade-in">
+      <h2>💡 Giải Pháp & Kiến Trúc Xử Lý Cốt Lõi</h2>
+      <p>Hệ thống này sinh ra để giải quyết các hạn chế kỹ thuật lớn nhất khi chia sẻ ngữ cảnh AI.</p>
+      
+      <div style="margin-top: 2rem;">
+        <h4 style="color: var(--primary); margin-bottom: 0.5rem;">1. Giải quyết bài toán lưu trữ phân tán (Ephemeral File Systems)</h4>
+        <div style="background: rgba(99, 102, 241, 0.1); border-left: 4px solid var(--primary); padding: 1rem; border-radius: 0 8px 8px 0; margin-bottom: 2rem;">
+          <p>Khi đưa server lên nền tảng đám mây miễn phí như Render, đĩa cứng sẽ bị xoá ngay sau khi khởi động lại. Hệ thống giải quyết bằng <strong>DataProvider Abstraction</strong>, tự động phát hiện môi trường và uỷ thác mọi thao tác Đọc/Ghi dữ liệu (như Save Session) trực tiếp qua <strong>GitHub Contents API</strong> thay vì ghi vào ổ cứng tĩnh. AI của mọi người trong nhóm sẽ luôn có data mới nhất theo thời gian thực.</p>
+        </div>
+
+        <h4 style="color: var(--accent); margin-bottom: 0.5rem;">2. Khắc phục giới hạn Rate Limit của GitHub API</h4>
+        <div style="background: rgba(236, 72, 153, 0.1); border-left: 4px solid var(--accent); padding: 1rem; border-radius: 0 8px 8px 0; margin-bottom: 2rem;">
+          <p>Việc tool Search phải gọi API tới toàn bộ tài liệu Markdown sẽ gây tràn Rate Limit ngay lập tức. Khắc phục bằng cơ chế <strong>In-Memory Caching & Warm-up</strong>. Server sẽ tải toàn bộ cấu trúc file về bộ nhớ Ram một lần duy nhất với TTL 5 phút, đảm bảo tốc độ phản hồi tính bằng millisecond (ms) không độ trễ!</p>
+        </div>
+
+        <h4 style="color: var(--success); margin-bottom: 0.5rem;">3. Khắc phục lỗi chuẩn hoá tên miền, font chữ Tiếng Việt</h4>
+        <div style="background: rgba(16, 185, 129, 0.1); border-left: 4px solid var(--success); padding: 1rem; border-radius: 0 8px 8px 0;">
+          <p>Việc AI sinh file với tên tiếng Việt chứa dấu sẽ gây lỗi hiển thị trên nhiều hệ điều hành và link truy cập. Hệ thống tự động xử lý thông qua helper <code>toSlug()</code> - bóc tách dấu câu tiếng Việt an toàn về tiếng Anh (a-z) chuẩn SEO và gạch ngang nối từ.</p>
+        </div>
+      </div>
+    </section>
+
     <!-- MCP TOOLS SECTION -->
     <section id="mcp" class="glass-panel fade-in">
-      <h2>🔌 Danh Sách 9 MCP Tools <span class="tag">Active</span></h2>
-      <p style="margin-bottom: 1.5rem;">Hệ thống cung cấp sẵn các công cụ giao tiếp chuẩn xác cho AI Agent qua stdio.</p>
+      <h2>🔌 Danh Sách 10 MCP Tools <span class="tag">Active</span></h2>
+      <p style="margin-bottom: 1.5rem;">Hệ thống cung cấp sẵn các công cụ giao tiếp cho AI Agent chạy ổn định trên cả stdio lẫn HTTP.</p>
 
       <ul style="list-style: none; display: flex; flex-direction: column; gap: 1rem;">
+        <li style="padding: 1rem; background: rgba(255,255,255,0.03); border-radius: 8px; border: 1px solid var(--glass-border);">
+          <strong style="color: #f59e0b;">auto_context</strong> — Bộ xử lý luồng thông minh (Orchestrator). Tự động quyết định và gọi các Tool thích hợp bên dưới để cung cấp thông tin cho AI (Zero-config).
+        </li>
         <li style="padding: 1rem; background: rgba(255,255,255,0.03); border-radius: 8px; border: 1px solid var(--glass-border);">
           <strong style="color: #818cf8;">get_overview</strong> — Lấy cái nhìn tổng quan về thư mục toàn bộ Knowledge Base.
         </li>
@@ -378,13 +416,13 @@ node scripts/test-client.js</code></pre>
           <strong style="color: #818cf8;">get_project_context</strong> — Nạp context riêng lẻ cho 1 dự án cụ thể.
         </li>
         <li style="padding: 1rem; background: rgba(255,255,255,0.03); border-radius: 8px; border: 1px solid var(--glass-border);">
-          <strong style="color: var(--accent);">search_knowledge</strong> — Tìm kiếm linh hoạt Full-text Search vào chỉ mục `.index`.
+          <strong style="color: var(--accent);">search_knowledge</strong> — Tìm kiếm linh hoạt Full-text Search vào chỉ mục hoặc qua Cache.
         </li>
         <li style="padding: 1rem; background: rgba(255,255,255,0.03); border-radius: 8px; border: 1px solid var(--glass-border);">
           <strong style="color: #38bdf8;">get_pattern / get_decision / get_lesson</strong> — Bộ 3 công cụ truy xuất tài liệu chuyên biệt (Patterns, ADRs, Lessons).
         </li>
         <li style="padding: 1rem; background: rgba(255,255,255,0.03); border-radius: 8px; border: 1px solid var(--glass-border);">
-          <strong style="color: var(--success);">save_session / save_lesson</strong> — Ghi trực tiếp tài liệu từ AI xuống máy tính với định dạng YAML schema chuẩn.
+          <strong style="color: var(--success);">save_session / save_lesson</strong> — Ghi trực tiếp tài liệu từ AI. (Hỗ trợ commit qua Github API ở mode HTTP).
         </li>
       </ul>
     </section>
