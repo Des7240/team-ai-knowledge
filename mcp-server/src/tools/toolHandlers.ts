@@ -150,6 +150,16 @@ export function createToolHandlers(provider: DataProvider) {
     return JSON.stringify(matches, null, 2);
   }
 
+  function toSlug(str: string): string {
+    return str
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/đ/gi, 'd')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+  }
+
   /**
    * Handles save_session — saves a new session summary.
    * @param params - Session data.
@@ -165,7 +175,7 @@ export function createToolHandlers(provider: DataProvider) {
     const { projectName, title, goals, filesChanged, summary } = params;
 
     const date = new Date().toISOString().split('T')[0];
-    const fileName = `${date}-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.md`;
+    const fileName = `${date}-${toSlug(title)}.md`;
     const targetPath = `projects/${projectName}/sessions/${fileName}`;
 
     const content = [
@@ -206,7 +216,7 @@ export function createToolHandlers(provider: DataProvider) {
 
     const date = new Date().toISOString().split('T')[0];
     const lessonId = `LL-${date}-${Math.floor(100 + Math.random() * 900)}`;
-    const fileName = `${lessonId}-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.md`;
+    const fileName = `${lessonId}-${toSlug(title)}.md`;
     const targetPath = `_global/lessons/${fileName}`;
 
     const content = [
