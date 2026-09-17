@@ -7,15 +7,19 @@
 
 /** Supported tool names in the KB */
 export type KBToolName =
-  | 'get_overview'
-  | 'get_project_context'
-  | 'search_knowledge'
-  | 'get_pattern'
-  | 'get_decision'
-  | 'get_lesson'
-  | 'list_recent_sessions'
-  | 'archive_knowledge'
-  | 'restore_knowledge';
+  | 'xem_tong_quan'
+  | 'xem_ngu_canh_du_an'
+  | 'tim_kiem_kien_thuc'
+  | 'xem_mau_thiet_ke'
+  | 'xem_quyet_dinh'
+  | 'xem_bai_hoc'
+  | 'danh_sach_phien_gan_day'
+  | 'luu_tru_kien_thuc'
+  | 'phuc_hoi_kien_thuc'
+  | 'xem_bieu_mau'
+  | 'xem_khao_sat'
+  | 'xem_dac_ta'
+  | 'luu_danh_gia';
 
 /** Supported task types */
 export type TaskType = 'coding' | 'debug' | 'architecture' | 'general';
@@ -62,7 +66,7 @@ const STOP_WORDS = new Set([
  * and task-type-specific score boosts.
  */
 const KEYWORD_MAP: Record<KBToolName, KeywordEntry> = {
-  get_overview: {
+  xem_tong_quan: {
     keywords: [
       'overview', 'tong quan', 'tổng quan', 'start', 'bat dau', 'bắt đầu',
       'cau truc', 'cấu trúc', 'structure', 'map', 'ban do', 'bản đồ',
@@ -71,7 +75,7 @@ const KEYWORD_MAP: Record<KBToolName, KeywordEntry> = {
     baseScore: 3,
     taskTypeBoost: { general: 3 },
   },
-  get_project_context: {
+  xem_ngu_canh_du_an: {
     keywords: [
       'context', 'ngu canh', 'ngữ cảnh', 'project info', 'du an', 'dự án',
       'tech stack', 'database', 'schema', 'thong tin', 'thông tin',
@@ -80,22 +84,22 @@ const KEYWORD_MAP: Record<KBToolName, KeywordEntry> = {
     baseScore: 3,
     taskTypeBoost: { general: 2, architecture: 2 },
   },
-  search_knowledge: {
+  tim_kiem_kien_thuc: {
     keywords: [],
     baseScore: 1,
     taskTypeBoost: { general: 1, coding: 1, debug: 1, architecture: 1 },
   },
-  get_pattern: {
+  xem_mau_thiet_ke: {
     keywords: [
       'pattern', 'convention', 'coding style', 'quy uoc', 'quy ước',
       'cach viet', 'cách viết', 'naming', 'dat ten', 'đặt tên',
       'error handling', 'xu ly loi', 'xử lý lỗi', 'api response',
-      'git workflow', 'code style', 'template', 'standard', 'chuan', 'chuẩn',
+      'git workflow', 'code style', 'standard', 'chuan', 'chuẩn',
     ],
     baseScore: 3,
     taskTypeBoost: { coding: 3 },
   },
-  get_decision: {
+  xem_quyet_dinh: {
     keywords: [
       'decision', 'adr', 'quyet dinh', 'quyết định', 'kien truc', 'kiến trúc',
       'architecture', 'why', 'tai sao', 'tại sao', 'ly do', 'lý do',
@@ -104,7 +108,7 @@ const KEYWORD_MAP: Record<KBToolName, KeywordEntry> = {
     baseScore: 3,
     taskTypeBoost: { architecture: 5 },
   },
-  get_lesson: {
+  xem_bai_hoc: {
     keywords: [
       'bug', 'loi', 'lỗi', 'error', 'lesson', 'bai hoc', 'bài học',
       'fix', 'debug', 'crash', 'fail', 'failure', 'issue', 'problem',
@@ -114,7 +118,7 @@ const KEYWORD_MAP: Record<KBToolName, KeywordEntry> = {
     baseScore: 3,
     taskTypeBoost: { debug: 5 },
   },
-  list_recent_sessions: {
+  danh_sach_phien_gan_day: {
     keywords: [
       'recent', 'gan day', 'gần đây', 'tuan qua', 'tuần qua',
       'hom qua', 'hôm qua', 'session', 'ai da lam', 'ai đã làm',
@@ -124,7 +128,7 @@ const KEYWORD_MAP: Record<KBToolName, KeywordEntry> = {
     baseScore: 3,
     taskTypeBoost: { general: 2 },
   },
-  archive_knowledge: {
+  luu_tru_kien_thuc: {
     keywords: [
       'archive', 'luu tru', 'lưu trữ', 'thung rac', 'thùng rác',
       'xoa', 'xóa', 'delete', 'remove', 'superseded', 'cu', 'cũ'
@@ -132,7 +136,7 @@ const KEYWORD_MAP: Record<KBToolName, KeywordEntry> = {
     baseScore: 3,
     taskTypeBoost: { general: 1 },
   },
-  restore_knowledge: {
+  phuc_hoi_kien_thuc: {
     keywords: [
       'restore', 'khoi phuc', 'khôi phục', 'phuc hoi', 'phục hồi',
       'unarchive', 'active'
@@ -140,6 +144,34 @@ const KEYWORD_MAP: Record<KBToolName, KeywordEntry> = {
     baseScore: 3,
     taskTypeBoost: { general: 1 },
   },
+  xem_bieu_mau: {
+    keywords: [
+      'template', 'bieu mau', 'biểu mẫu', 'form', 'mau', 'mẫu', 'cau truc mau', 'cấu trúc mẫu'
+    ],
+    baseScore: 4,
+    taskTypeBoost: { general: 2, architecture: 2, coding: 2 },
+  },
+  xem_khao_sat: {
+    keywords: [
+      'khao sat', 'khảo sát', 'exploration', 'kham pha', 'khám phá', 'discovery'
+    ],
+    baseScore: 3,
+    taskTypeBoost: { architecture: 3, general: 2 },
+  },
+  xem_dac_ta: {
+    keywords: [
+      'dac ta', 'đặc tả', 'spec', 'specification', 'requirements', 'yeu cau', 'yêu cầu'
+    ],
+    baseScore: 3,
+    taskTypeBoost: { coding: 3, architecture: 2 },
+  },
+  luu_danh_gia: {
+    keywords: [
+      'danh gia', 'đánh giá', 'review', 'verify', 'verification', 'kiem tra', 'kiểm tra', 'cham diem', 'chấm điểm'
+    ],
+    baseScore: 3,
+    taskTypeBoost: { coding: 2, general: 1 },
+  }
 };
 
 /** Regex patterns for extracting specific IDs from chatContext */
@@ -147,6 +179,8 @@ const ID_PATTERNS: Record<string, RegExp> = {
   patternId: /\b(PAT-\d{3})\b/i,
   decisionId: /\b(ADR-\d{4})\b/i,
   lessonId: /\b(LL-[\w-]+)\b/i,
+  explorationId: /\b(EXP-[\w-]+)\b/i,
+  specId: /\b(SPEC-[\w-]+)\b/i,
 };
 
 /**
@@ -223,8 +257,8 @@ function calculateToolScore(
     score += entry.taskTypeBoost[taskType]!;
   }
 
-  // search_knowledge always gets base score as fallback
-  if (toolName === 'search_knowledge' && score === 0) {
+  // tim_kiem_kien_thuc always gets base score as fallback
+  if (toolName === 'tim_kiem_kien_thuc' && score === 0) {
     score = entry.baseScore;
   }
 
@@ -249,7 +283,7 @@ const MAX_TOOLS = 4;
  *   chatContext: 'tôi đang debug lỗi crash khi login',
  *   taskType: 'debug'
  * });
- * // Returns: [{ toolName: 'get_lesson', score: 8, ... }, ...]
+ * // Returns: [{ toolName: 'xem_bai_hoc', score: 8, ... }, ...]
  * ```
  */
 export function analyzeIntent(input: AnalyzerInput): ToolIntent[] {
@@ -259,15 +293,19 @@ export function analyzeIntent(input: AnalyzerInput): ToolIntent[] {
   const searchQuery = extractSearchQuery(chatContext);
 
   const toolNames: KBToolName[] = [
-    'get_overview',
-    'get_project_context',
-    'search_knowledge',
-    'get_pattern',
-    'get_decision',
-    'get_lesson',
-    'list_recent_sessions',
-    'archive_knowledge',
-    'restore_knowledge',
+    'xem_tong_quan',
+    'xem_ngu_canh_du_an',
+    'tim_kiem_kien_thuc',
+    'xem_mau_thiet_ke',
+    'xem_quyet_dinh',
+    'xem_bai_hoc',
+    'danh_sach_phien_gan_day',
+    'luu_tru_kien_thuc',
+    'phuc_hoi_kien_thuc',
+    'xem_bieu_mau',
+    'xem_khao_sat',
+    'xem_dac_ta',
+    'luu_danh_gia'
   ];
 
   const scored: ToolIntent[] = [];
@@ -281,37 +319,50 @@ export function analyzeIntent(input: AnalyzerInput): ToolIntent[] {
 
     // Build params based on tool type
     switch (toolName) {
-      case 'get_project_context':
+      case 'xem_ngu_canh_du_an':
         if (projectName) {
           params.projectName = projectName;
         } else {
           continue; // Skip if no project specified
         }
         break;
-      case 'search_knowledge':
+      case 'tim_kiem_kien_thuc':
         params.query = searchQuery;
         if (projectName) params.projectName = projectName;
         break;
-      case 'get_pattern':
+      case 'xem_mau_thiet_ke':
         params.patternId = extractedIds.patternId || searchQuery;
         break;
-      case 'get_decision':
+      case 'xem_quyet_dinh':
         params.decisionId = extractedIds.decisionId || searchQuery;
         break;
-      case 'get_lesson':
+      case 'xem_bai_hoc':
         params.lessonId = extractedIds.lessonId || searchQuery;
         break;
-      case 'list_recent_sessions':
+      case 'danh_sach_phien_gan_day':
         params.days = 3;
         if (projectName) params.projectName = projectName;
         break;
-      case 'archive_knowledge':
+      case 'luu_tru_kien_thuc':
         params.path = searchQuery; // Basic fallback
         break;
-      case 'restore_knowledge':
+      case 'phuc_hoi_kien_thuc':
         params.path = searchQuery; // Basic fallback
         break;
-      // get_overview has no params
+      case 'xem_bieu_mau':
+        params.type = searchQuery; // Need a way to extract template type, but fallback to search query
+        break;
+      case 'xem_khao_sat':
+        params.explorationId = extractedIds.explorationId || searchQuery;
+        break;
+      case 'xem_dac_ta':
+        params.specId = extractedIds.specId || searchQuery;
+        break;
+      case 'luu_danh_gia':
+        if (projectName) params.projectName = projectName;
+        params.title = searchQuery;
+        break;
+      // xem_tong_quan has no params
     }
 
     scored.push({ toolName, score, extractedParams: params });

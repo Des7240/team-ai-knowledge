@@ -57,144 +57,194 @@ function createProvider(mode: 'http' | 'stdio'): DataProvider {
  */
 const TOOL_DEFINITIONS = [
   {
-    name: 'get_overview',
-    description: 'Get global Knowledge Base overview, rules, global patterns, and list of projects.',
+    name: 'xem_tong_quan',
+    description: 'La bàn: Đọc khi bắt đầu phiên để lấy bản đồ KB (START_HERE.md, KNOWLEDGE_MAP.md).',
     inputSchema: { type: 'object' as const, properties: {} },
   },
   {
-    name: 'get_project_context',
-    description: 'Get context and overview documents for a specific project.',
+    name: 'xem_ngu_canh_du_an',
+    description: 'Nền tảng: Lấy thông tin chung của dự án để hiểu bối cảnh trước khi code.',
     inputSchema: {
       type: 'object' as const,
-      properties: { projectName: { type: 'string', description: 'Target project name' } },
+      properties: { projectName: { type: 'string', description: 'Tên dự án cần lấy thông tin' } },
       required: ['projectName'],
     },
   },
   {
-    name: 'search_knowledge',
-    description: 'Search knowledge base documents by query string and optional project.',
+    name: 'tim_kiem_kien_thuc',
+    description: 'Thám tử: Tìm kiếm tự do trong toàn bộ KB bằng từ khóa khi không biết chính xác ID tài liệu.',
     inputSchema: {
       type: 'object' as const,
       properties: {
-        query: { type: 'string', description: 'Keyword query' },
-        projectName: { type: 'string', description: 'Optional project filter' },
+        query: { type: 'string', description: 'Từ khóa tìm kiếm' },
+        projectName: { type: 'string', description: 'Bộ lọc theo dự án (tùy chọn)' },
       },
       required: ['query'],
     },
   },
   {
-    name: 'get_pattern',
-    description: 'Fetch design pattern by ID (e.g. PAT-001) or search query.',
+    name: 'xem_mau_thiet_ke',
+    description: 'Kiểm soát viên: Lấy quy tắc code/convention (Pattern) bắt buộc phải tuân theo trước khi viết code.',
     inputSchema: {
       type: 'object' as const,
-      properties: { patternId: { type: 'string', description: 'Pattern ID or name' } },
+      properties: { patternId: { type: 'string', description: 'ID của Pattern (VD: PAT-001) hoặc từ khóa' } },
       required: ['patternId'],
     },
   },
   {
-    name: 'get_decision',
-    description: 'Fetch Architecture Decision Record (ADR) by ID (e.g. ADR-0001).',
+    name: 'xem_quyet_dinh',
+    description: 'Sử gia: Lấy lịch sử quyết định kiến trúc (ADR) để hiểu lý do tại sao hệ thống được thiết kế như vậy.',
     inputSchema: {
       type: 'object' as const,
-      properties: { decisionId: { type: 'string', description: 'ADR ID' } },
+      properties: { decisionId: { type: 'string', description: 'ID của ADR (VD: ADR-0001) hoặc từ khóa' } },
       required: ['decisionId'],
     },
   },
   {
-    name: 'get_lesson',
-    description: 'Fetch lesson learned record by ID or query.',
+    name: 'xem_bai_hoc',
+    description: 'Cứu thương: Lấy bài học (Lessons) để tìm giải pháp cho lỗi/bug đang gặp phải.',
     inputSchema: {
       type: 'object' as const,
-      properties: { lessonId: { type: 'string', description: 'Lesson ID' } },
+      properties: { lessonId: { type: 'string', description: 'ID của bài học hoặc từ khóa' } },
       required: ['lessonId'],
     },
   },
   {
-    name: 'list_recent_sessions',
-    description: 'List AI session summaries from recent days.',
+    name: 'danh_sach_phien_gan_day',
+    description: 'Báo cáo viên: Xem team vừa làm gì gần đây để bắt nhịp tiến độ.',
     inputSchema: {
       type: 'object' as const,
       properties: {
-        days: { type: 'number', description: 'Number of recent days (default: 3)' },
-        projectName: { type: 'string', description: 'Optional project name' },
+        days: { type: 'number', description: 'Số ngày gần đây (mặc định: 3)' },
+        projectName: { type: 'string', description: 'Lọc theo dự án (tùy chọn)' },
       },
     },
   },
   {
-    name: 'save_session',
-    description: 'Save a new session summary markdown file for a project.',
+    name: 'luu_phien_lam_viec',
+    description: 'Thư ký: Tổng kết những gì đã làm, thay đổi file nào khi kết thúc phiên.',
     inputSchema: {
       type: 'object' as const,
       properties: {
-        projectName: { type: 'string', description: 'Project name' },
-        title: { type: 'string', description: 'Session title' },
-        goals: { type: 'array', items: { type: 'string' }, description: 'Session goals' },
-        filesChanged: { type: 'array', items: { type: 'string' }, description: 'Files modified' },
-        summary: { type: 'string', description: 'Detailed session summary body' },
+        projectName: { type: 'string', description: 'Tên dự án' },
+        title: { type: 'string', description: 'Tiêu đề ngắn gọn cho phiên' },
+        goals: { type: 'array', items: { type: 'string' }, description: 'Mục tiêu ban đầu của phiên' },
+        filesChanged: { type: 'array', items: { type: 'string' }, description: 'Danh sách các file bị thay đổi' },
+        summary: { type: 'string', description: 'Nội dung tóm tắt chi tiết của phiên' },
       },
       required: ['projectName', 'title', 'goals', 'summary'],
     },
   },
   {
-    name: 'save_lesson',
-    description: 'Save a new lesson learned file to team knowledge base.',
+    name: 'luu_bai_hoc',
+    description: 'Giáo viên: Lưu lại nguyên nhân và cách giải quyết khi sửa xong một lỗi khó.',
     inputSchema: {
       type: 'object' as const,
       properties: {
-        title: { type: 'string', description: 'Lesson title' },
-        scope: { type: 'string', description: 'Scope (backend, frontend, devops, etc.)' },
-        severity: { type: 'string', description: 'Severity (low, medium, high, critical)' },
-        resolution: { type: 'string', description: 'Resolution (resolved, workaround)' },
-        problem: { type: 'string', description: 'Problem description' },
-        solution: { type: 'string', description: 'Solution details' },
+        title: { type: 'string', description: 'Tiêu đề của bài học' },
+        scope: { type: 'string', description: 'Phạm vi (VD: backend, frontend, devops)' },
+        severity: { type: 'string', description: 'Mức độ (VD: low, medium, high, critical)' },
+        resolution: { type: 'string', description: 'Tình trạng giải quyết (VD: resolved, workaround)' },
+        problem: { type: 'string', description: 'Mô tả vấn đề/lỗi' },
+        solution: { type: 'string', description: 'Giải pháp khắc phục chi tiết' },
       },
       required: ['title', 'scope', 'severity', 'resolution', 'problem', 'solution'],
     },
   },
   {
-    name: 'archive_knowledge',
-    description: 'Archive a knowledge base file (moves to archive folder and marks as superseded).',
+    name: 'luu_tru_kien_thuc',
+    description: 'Thủ thư: Chuyển tài liệu cũ (đã bị thay thế) vào thư mục archive để tránh nhầm lẫn.',
     inputSchema: {
       type: 'object' as const,
       properties: {
-        path: { type: 'string', description: 'Relative path of the file to archive' },
-        reason: { type: 'string', description: 'Optional reason for archiving' },
+        path: { type: 'string', description: 'Đường dẫn tương đối của file cần lưu trữ' },
+        reason: { type: 'string', description: 'Lý do lưu trữ (tùy chọn)' },
       },
       required: ['path'],
     },
   },
   {
-    name: 'restore_knowledge',
-    description: 'Restore an archived knowledge base file to its active location.',
+    name: 'phuc_hoi_kien_thuc',
+    description: 'Thủ thư: Khôi phục tài liệu từ archive về vị trí gốc nếu cần thiết.',
     inputSchema: {
       type: 'object' as const,
       properties: {
-        path: { type: 'string', description: 'Relative path of the archived file' },
+        path: { type: 'string', description: 'Đường dẫn tương đối của file trong archive' },
       },
       required: ['path'],
     },
   },
   {
-    name: 'auto_context',
+    name: 'xem_bieu_mau',
+    description: 'Quản lý quy trình: Lấy cấu trúc chuẩn (Template) trước khi tạo một tài liệu mới (Decision, Lesson, Spec, Pattern).',
+    inputSchema: {
+      type: 'object' as const,
+      properties: {
+        type: { type: 'string', description: 'Loại tài liệu cần lấy mẫu (VD: decision, lesson, pattern, session, exploration, spec, review)' },
+      },
+      required: ['type'],
+    },
+  },
+  {
+    name: 'xem_khao_sat',
+    description: 'Nhà phân tích: Lấy tài liệu khám phá (Exploration) của một vấn đề trước khi bắt đầu giải quyết.',
+    inputSchema: {
+      type: 'object' as const,
+      properties: {
+        explorationId: { type: 'string', description: 'Tên hoặc ID của tài liệu khảo sát' },
+      },
+      required: ['explorationId'],
+    },
+  },
+  {
+    name: 'xem_dac_ta',
+    description: 'Kiểm toán viên: Lấy yêu cầu chi tiết (Specs) để code đúng theo mô tả.',
+    inputSchema: {
+      type: 'object' as const,
+      properties: {
+        specId: { type: 'string', description: 'Tên hoặc ID của đặc tả' },
+      },
+      required: ['specId'],
+    },
+  },
+  {
+    name: 'luu_danh_gia',
+    description: 'Thanh tra (QA): Lưu báo cáo đánh giá chất lượng thay đổi dựa trên 5 tiêu chí D1-D5.',
+    inputSchema: {
+      type: 'object' as const,
+      properties: {
+        projectName: { type: 'string', description: 'Tên dự án' },
+        title: { type: 'string', description: 'Tiêu đề đánh giá' },
+        completeness: { type: 'string', description: 'Đánh giá D1 (PASS/WARNING/CRITICAL)' },
+        correctness: { type: 'string', description: 'Đánh giá D2' },
+        coherence: { type: 'string', description: 'Đánh giá D3' },
+        constraints: { type: 'string', description: 'Đánh giá D4' },
+        blastRadius: { type: 'string', description: 'Đánh giá D5' },
+        summary: { type: 'string', description: 'Tổng kết đánh giá chi tiết' },
+      },
+      required: ['projectName', 'title', 'completeness', 'correctness', 'coherence', 'constraints', 'blastRadius', 'summary'],
+    },
+  },
+  {
+    name: 'phan_tich_ngu_canh_tu_dong',
     description:
-      'Smart orchestrator — automatically analyzes chat context and calls the most relevant KB tools. ' +
-      'Provide a summary of the current conversation/task and optionally a project name and task type. ' +
-      'Returns aggregated results from multiple KB tools based on intent analysis.',
+      'Điều phối viên: Tự động phân tích lịch sử chat và gọi ngầm các tool phù hợp. ' +
+      'Trả về kết quả tổng hợp từ nhiều tool KB dựa trên ý định.',
     inputSchema: {
       type: 'object' as const,
       properties: {
         chatContext: {
           type: 'string',
-          description: 'Summary or raw text of the current conversation/task context',
+          description: 'Tóm tắt nội dung lịch sử chat hoặc văn bản thô để phân tích',
         },
         projectName: {
           type: 'string',
-          description: 'Optional project name to scope the search',
+          description: 'Tên dự án (tùy chọn)',
         },
         taskType: {
           type: 'string',
           enum: ['coding', 'debug', 'architecture', 'general'],
-          description: 'Optional task type hint to improve tool selection accuracy',
+          description: 'Gợi ý loại công việc để chọn tool chính xác hơn',
         },
       },
       required: ['chatContext'],
@@ -217,38 +267,38 @@ function registerHandlers(server: Server, handlers: ToolHandlers): void {
 
     try {
       switch (name) {
-        case 'get_overview':
-          return { content: [{ type: 'text' as const, text: await handlers.handleGetOverview() }] };
+        case 'xem_tong_quan':
+          return { content: [{ type: 'text' as const, text: await handlers.handleXemTongQuan() }] };
 
-        case 'get_project_context': {
+        case 'xem_ngu_canh_du_an': {
           const { projectName } = args as { projectName: string };
-          return { content: [{ type: 'text' as const, text: await handlers.handleGetProjectContext(projectName) }] };
+          return { content: [{ type: 'text' as const, text: await handlers.handleXemNguCanhDuAn(projectName) }] };
         }
 
-        case 'search_knowledge': {
+        case 'tim_kiem_kien_thuc': {
           const { query, projectName } = args as { query: string; projectName?: string };
-          return { content: [{ type: 'text' as const, text: await handlers.handleSearchKnowledge(query, projectName) }] };
+          return { content: [{ type: 'text' as const, text: await handlers.handleTimKiemKienThuc(query, projectName) }] };
         }
 
-        case 'get_pattern': {
+        case 'xem_mau_thiet_ke': {
           const { patternId } = args as { patternId: string };
-          return { content: [{ type: 'text' as const, text: await handlers.handleGetPattern(patternId) }] };
+          return { content: [{ type: 'text' as const, text: await handlers.handleXemMauThietKe(patternId) }] };
         }
 
-        case 'get_decision': {
+        case 'xem_quyet_dinh': {
           const { decisionId } = args as { decisionId: string };
-          return { content: [{ type: 'text' as const, text: await handlers.handleGetDecision(decisionId) }] };
+          return { content: [{ type: 'text' as const, text: await handlers.handleXemQuyetDinh(decisionId) }] };
         }
 
-        case 'get_lesson': {
+        case 'xem_bai_hoc': {
           const { lessonId } = args as { lessonId: string };
-          return { content: [{ type: 'text' as const, text: await handlers.handleGetLesson(lessonId) }] };
+          return { content: [{ type: 'text' as const, text: await handlers.handleXemBaiHoc(lessonId) }] };
         }
 
-        case 'list_recent_sessions':
-          return { content: [{ type: 'text' as const, text: await handlers.handleListRecentSessions() }] };
+        case 'danh_sach_phien_gan_day':
+          return { content: [{ type: 'text' as const, text: await handlers.handleDanhSachPhienGanDay() }] };
 
-        case 'save_session': {
+        case 'luu_phien_lam_viec': {
           const sessionParams = args as {
             projectName: string;
             title: string;
@@ -256,10 +306,10 @@ function registerHandlers(server: Server, handlers: ToolHandlers): void {
             filesChanged?: string[];
             summary: string;
           };
-          return { content: [{ type: 'text' as const, text: await handlers.handleSaveSession(sessionParams) }] };
+          return { content: [{ type: 'text' as const, text: await handlers.handleLuuPhienLamViec(sessionParams) }] };
         }
 
-        case 'save_lesson': {
+        case 'luu_bai_hoc': {
           const lessonParams = args as {
             title: string;
             scope: string;
@@ -268,20 +318,49 @@ function registerHandlers(server: Server, handlers: ToolHandlers): void {
             problem: string;
             solution: string;
           };
-          return { content: [{ type: 'text' as const, text: await handlers.handleSaveLesson(lessonParams) }] };
+          return { content: [{ type: 'text' as const, text: await handlers.handleLuuBaiHoc(lessonParams) }] };
         }
 
-        case 'archive_knowledge': {
+        case 'luu_tru_kien_thuc': {
           const { path, reason } = args as { path: string; reason?: string };
-          return { content: [{ type: 'text' as const, text: await handlers.handleArchiveKnowledge(path, reason) }] };
+          return { content: [{ type: 'text' as const, text: await handlers.handleLuuTruKienThuc(path, reason) }] };
         }
 
-        case 'restore_knowledge': {
+        case 'phuc_hoi_kien_thuc': {
           const { path } = args as { path: string };
-          return { content: [{ type: 'text' as const, text: await handlers.handleRestoreKnowledge(path) }] };
+          return { content: [{ type: 'text' as const, text: await handlers.handlePhucHoiKienThuc(path) }] };
         }
 
-        case 'auto_context': {
+        case 'xem_bieu_mau': {
+          const { type } = args as { type: string };
+          return { content: [{ type: 'text' as const, text: await handlers.handleXemBieuMau(type) }] };
+        }
+
+        case 'xem_khao_sat': {
+          const { explorationId } = args as { explorationId: string };
+          return { content: [{ type: 'text' as const, text: await handlers.handleXemKhaoSat(explorationId) }] };
+        }
+
+        case 'xem_dac_ta': {
+          const { specId } = args as { specId: string };
+          return { content: [{ type: 'text' as const, text: await handlers.handleXemDacTa(specId) }] };
+        }
+
+        case 'luu_danh_gia': {
+          const reviewParams = args as {
+            projectName: string;
+            title: string;
+            completeness: string;
+            correctness: string;
+            coherence: string;
+            constraints: string;
+            blastRadius: string;
+            summary: string;
+          };
+          return { content: [{ type: 'text' as const, text: await handlers.handleLuuDanhGia(reviewParams) }] };
+        }
+
+        case 'phan_tich_ngu_canh_tu_dong': {
           const { chatContext, projectName, taskType } = args as {
             chatContext: string;
             projectName?: string;
@@ -339,7 +418,7 @@ function registerHandlers(server: Server, handlers: ToolHandlers): void {
 }
 
 /**
- * Executes a single tool intent from auto_context.
+ * Executes a single tool intent from phan_tich_ngu_canh_tu_dong.
  * @param intent - Tool intent from the analyzer.
  * @param handlers - Tool handler functions.
  * @returns Result string.
@@ -349,30 +428,38 @@ async function executeToolIntent(intent: ToolIntent, handlers: ToolHandlers): Pr
 
   try {
     switch (toolName) {
-      case 'get_overview':
-        return await handlers.handleGetOverview();
-      case 'get_project_context':
-        return await handlers.handleGetProjectContext(params.projectName as string);
-      case 'search_knowledge':
-        return await handlers.handleSearchKnowledge(
+      case 'xem_tong_quan':
+        return await handlers.handleXemTongQuan();
+      case 'xem_ngu_canh_du_an':
+        return await handlers.handleXemNguCanhDuAn(params.projectName as string);
+      case 'tim_kiem_kien_thuc':
+        return await handlers.handleTimKiemKienThuc(
           params.query as string,
           params.projectName as string | undefined
         );
-      case 'get_pattern':
-        return await handlers.handleGetPattern(params.patternId as string);
-      case 'get_decision':
-        return await handlers.handleGetDecision(params.decisionId as string);
-      case 'get_lesson':
-        return await handlers.handleGetLesson(params.lessonId as string);
-      case 'list_recent_sessions':
-        return await handlers.handleListRecentSessions(
+      case 'xem_mau_thiet_ke':
+        return await handlers.handleXemMauThietKe(params.patternId as string);
+      case 'xem_quyet_dinh':
+        return await handlers.handleXemQuyetDinh(params.decisionId as string);
+      case 'xem_bai_hoc':
+        return await handlers.handleXemBaiHoc(params.lessonId as string);
+      case 'danh_sach_phien_gan_day':
+        return await handlers.handleDanhSachPhienGanDay(
           params.days as number | undefined,
           params.projectName as string | undefined
         );
-      case 'archive_knowledge':
-        return await handlers.handleArchiveKnowledge(params.path as string, params.reason as string | undefined);
-      case 'restore_knowledge':
-        return await handlers.handleRestoreKnowledge(params.path as string);
+      case 'luu_tru_kien_thuc':
+        return await handlers.handleLuuTruKienThuc(params.path as string, params.reason as string | undefined);
+      case 'phuc_hoi_kien_thuc':
+        return await handlers.handlePhucHoiKienThuc(params.path as string);
+      case 'xem_bieu_mau':
+        return await handlers.handleXemBieuMau(params.type as string);
+      case 'xem_khao_sat':
+        return await handlers.handleXemKhaoSat(params.explorationId as string);
+      case 'xem_dac_ta':
+        return await handlers.handleXemDacTa(params.specId as string);
+      case 'luu_danh_gia':
+        return await handlers.handleLuuDanhGia(params as any);
       default:
         return `Unknown tool: ${toolName}`;
     }

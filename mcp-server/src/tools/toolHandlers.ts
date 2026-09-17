@@ -68,21 +68,21 @@ export function createToolHandlers(provider: DataProvider) {
   }
 
   /**
-   * Handles get_overview — returns KB overview and navigation map.
+   * Handles xem_tong_quan — returns KB overview and navigation map.
    * @returns Overview content string.
    */
-  async function handleGetOverview(): Promise<string> {
+  async function handleXemTongQuan(): Promise<string> {
     const mapDoc = await readMarkdown('KNOWLEDGE_MAP.md');
     const startDoc = await readMarkdown('START_HERE.md');
     return `# Overview\n\n${startDoc?.content || 'START_HERE.md not found.'}\n\n# Navigation Map\n\n${mapDoc?.content || 'KNOWLEDGE_MAP.md not found.'}`;
   }
 
   /**
-   * Handles get_project_context — returns project context/overview.
+   * Handles xem_ngu_canh_du_an — returns project context/overview.
    * @param projectName - Target project name.
    * @returns Project context content.
    */
-  async function handleGetProjectContext(projectName: string): Promise<string> {
+  async function handleXemNguCanhDuAn(projectName: string): Promise<string> {
     const doc = await readMarkdown(`projects/${projectName}/context/overview.md`);
     if (!doc) {
       return `Project '${projectName}' context not found.`;
@@ -91,12 +91,12 @@ export function createToolHandlers(provider: DataProvider) {
   }
 
   /**
-   * Handles search_knowledge — searches KB by query string.
+   * Handles tim_kiem_kien_thuc — searches KB by query string.
    * @param query - Keyword query.
    * @param projectName - Optional project filter.
    * @returns JSON stringified results.
    */
-  async function handleSearchKnowledge(
+  async function handleTimKiemKienThuc(
     query: string,
     projectName?: string
   ): Promise<string> {
@@ -107,42 +107,42 @@ export function createToolHandlers(provider: DataProvider) {
   }
 
   /**
-   * Handles get_pattern — fetches design pattern by ID or query.
+   * Handles xem_mau_thiet_ke — fetches design pattern by ID or query.
    * @param patternId - Pattern ID or search query.
    * @returns JSON stringified results.
    */
-  async function handleGetPattern(patternId: string): Promise<string> {
+  async function handleXemMauThietKe(patternId: string): Promise<string> {
     const matches = await searchMarkdownFiles(patternId);
     return JSON.stringify(matches, null, 2);
   }
 
   /**
-   * Handles get_decision — fetches ADR by ID or query.
+   * Handles xem_quyet_dinh — fetches ADR by ID or query.
    * @param decisionId - ADR ID or search query.
    * @returns JSON stringified results.
    */
-  async function handleGetDecision(decisionId: string): Promise<string> {
+  async function handleXemQuyetDinh(decisionId: string): Promise<string> {
     const matches = await searchMarkdownFiles(decisionId);
     return JSON.stringify(matches, null, 2);
   }
 
   /**
-   * Handles get_lesson — fetches lesson learned by ID or query.
+   * Handles xem_bai_hoc — fetches lesson learned by ID or query.
    * @param lessonId - Lesson ID or search query.
    * @returns JSON stringified results.
    */
-  async function handleGetLesson(lessonId: string): Promise<string> {
+  async function handleXemBaiHoc(lessonId: string): Promise<string> {
     const matches = await searchMarkdownFiles(lessonId);
     return JSON.stringify(matches, null, 2);
   }
 
   /**
-   * Handles list_recent_sessions — lists recent session summaries.
+   * Handles danh_sach_phien_gan_day — lists recent session summaries.
    * @param _days - Number of recent days (currently searches all).
    * @param _projectName - Optional project filter.
    * @returns JSON stringified results.
    */
-  async function handleListRecentSessions(
+  async function handleDanhSachPhienGanDay(
     _days?: number,
     _projectName?: string
   ): Promise<string> {
@@ -161,11 +161,11 @@ export function createToolHandlers(provider: DataProvider) {
   }
 
   /**
-   * Handles save_session — saves a new session summary.
+   * Handles luu_phien_lam_viec — saves a new session summary.
    * @param params - Session data.
    * @returns Success message with file path.
    */
-  async function handleSaveSession(params: {
+  async function handleLuuPhienLamViec(params: {
     projectName: string;
     title: string;
     goals: string[];
@@ -200,11 +200,11 @@ export function createToolHandlers(provider: DataProvider) {
   }
 
   /**
-   * Handles save_lesson — saves a new lesson learned.
+   * Handles luu_bai_hoc — saves a new lesson learned.
    * @param params - Lesson data.
    * @returns Success message with file path.
    */
-  async function handleSaveLesson(params: {
+  async function handleLuuBaiHoc(params: {
     title: string;
     scope: string;
     severity: string;
@@ -272,12 +272,12 @@ export function createToolHandlers(provider: DataProvider) {
   }
 
   /**
-   * Handles archive_knowledge — archives a KB file.
+   * Handles luu_tru_kien_thuc — archives a KB file.
    * @param path - Path to file.
    * @param reason - Optional reason for archiving.
    * @returns Success message.
    */
-  async function handleArchiveKnowledge(path: string, reason?: string): Promise<string> {
+  async function handleLuuTruKienThuc(path: string, reason?: string): Promise<string> {
     const doc = await readMarkdown(path);
     if (!doc) return `Error: File not found at ${path}`;
 
@@ -296,11 +296,11 @@ export function createToolHandlers(provider: DataProvider) {
   }
 
   /**
-   * Handles restore_knowledge — restores an archived KB file.
+   * Handles phuc_hoi_kien_thuc — restores an archived KB file.
    * @param path - Path to archived file.
    * @returns Success message.
    */
-  async function handleRestoreKnowledge(path: string): Promise<string> {
+  async function handlePhucHoiKienThuc(path: string): Promise<string> {
     const doc = await readMarkdown(path);
     if (!doc) return `Error: File not found at ${path}`;
 
@@ -318,20 +318,106 @@ export function createToolHandlers(provider: DataProvider) {
     return `✅ Successfully restored to: ${newPath}`;
   }
 
+  /**
+   * Handles xem_bieu_mau — returns a template content.
+   * @param type - Template type (pattern, decision, lesson, session).
+   * @returns Template content string.
+   */
+  async function handleXemBieuMau(type: string): Promise<string> {
+    const safeType = toSlug(type);
+    const doc = await readMarkdown(`_global/templates/${safeType}.md`);
+    if (!doc) {
+      return `Template '${safeType}' not found. Available templates might be: pattern, decision, lesson, session.`;
+    }
+    return `# Template: ${type}\n\n${doc.content}`;
+  }
+  /**
+   * Handles xem_khao_sat — fetches exploration doc by ID or query.
+   * @param explorationId - Exploration ID or search query.
+   * @returns JSON stringified results.
+   */
+  async function handleXemKhaoSat(explorationId: string): Promise<string> {
+    const matches = await searchMarkdownFiles(explorationId);
+    return JSON.stringify(matches, null, 2);
+  }
+
+  /**
+   * Handles xem_dac_ta — fetches spec by ID or query.
+   * @param specId - Spec ID or search query.
+   * @returns JSON stringified results.
+   */
+  async function handleXemDacTa(specId: string): Promise<string> {
+    const matches = await searchMarkdownFiles(specId);
+    return JSON.stringify(matches, null, 2);
+  }
+
+  /**
+   * Handles luu_danh_gia — saves a new verification review.
+   * @param params - Review data.
+   * @returns Success message with file path.
+   */
+  async function handleLuuDanhGia(params: {
+    projectName: string;
+    title: string;
+    completeness: string;
+    correctness: string;
+    coherence: string;
+    constraints: string;
+    blastRadius: string;
+    summary: string;
+  }): Promise<string> {
+    const { projectName, title, completeness, correctness, coherence, constraints, blastRadius, summary } = params;
+
+    const date = new Date().toISOString().split('T')[0];
+    const fileName = `${date}-${toSlug(title)}.md`;
+    const targetPath = `projects/${projectName}/reviews/${fileName}`;
+
+    const content = [
+      '---',
+      `id: REV-${date}-${Math.floor(100 + Math.random() * 900)}`,
+      `date: "${date}"`,
+      `author: AI-Agent`,
+      `project: ${projectName}`,
+      `tags: [review, verification]`,
+      '---',
+      '',
+      `# Verification Report: ${title}`,
+      '',
+      '## 5-Dimension Assessment',
+      `| Dimension | Status |`,
+      `|-----------|--------|`,
+      `| D1: Completeness | ${completeness} |`,
+      `| D2: Correctness | ${correctness} |`,
+      `| D3: Coherence | ${coherence} |`,
+      `| D4: Constraints | ${constraints} |`,
+      `| D5: Blast Radius | ${blastRadius} |`,
+      '',
+      '## Summary',
+      summary,
+    ].join('\n');
+
+    await provider.writeFile(targetPath, content);
+    return `✅ Verification report successfully saved to: ${targetPath}`;
+  }
+
   return {
     readMarkdown,
     searchMarkdownFiles,
-    handleGetOverview,
-    handleGetProjectContext,
-    handleSearchKnowledge,
-    handleGetPattern,
-    handleGetDecision,
-    handleGetLesson,
-    handleListRecentSessions,
-    handleSaveSession,
-    handleSaveLesson,
-    handleArchiveKnowledge,
-    handleRestoreKnowledge,
+    handleXemTongQuan,
+    handleXemNguCanhDuAn,
+    handleTimKiemKienThuc,
+    handleXemMauThietKe,
+    handleXemQuyetDinh,
+    handleXemBaiHoc,
+    handleDanhSachPhienGanDay,
+    handleLuuPhienLamViec,
+    handleLuuBaiHoc,
+    handleLuuTruKienThuc,
+    handlePhucHoiKienThuc,
+    handleXemBieuMau,
+    handleXemKhaoSat,
+    handleXemDacTa,
+    handleLuuDanhGia,
   };
 }
 
