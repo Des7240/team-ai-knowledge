@@ -54,6 +54,7 @@ Khi user nói "tổng kết", "summarize", hoặc kết thúc → Gọi `save_se
 | Project | Đường dẫn | Mô tả |
 |---------|-----------|-------|
 | team-ai-knowledge | [`projects/team-ai-knowledge/`](./projects/team-ai-knowledge/) | Knowledge về bản thân hệ thống KB |
+| MT-GRMS | [`projects/MT-GRMS/`](./projects/MT-GRMS/) | Hệ thống quản lý bán lẻ tạp hóa đa khách hàng |
 
 > Thêm project mới vào đây sau khi tạo.
 
