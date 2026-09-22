@@ -2,7 +2,9 @@
 id: ADR-0001
 title: Loại bỏ Native Mobile App khỏi phạm vi v1
 status: accepted
-date: 2026-09-12
+date: "2026-09-12"
+author: "Team"
+scope: "frontend"
 ---
 
 # ADR-0001: Tập trung phát triển Web App, loại bỏ Native Mobile App khỏi phạm vi Version 1
