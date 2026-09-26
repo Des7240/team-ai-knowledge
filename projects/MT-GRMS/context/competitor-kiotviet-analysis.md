@@ -1,60 +1,78 @@
 ---
-title: Phân tích Đối thủ - KiotViet
-description: Phân tích tính năng Hàng hóa Lô – Hạn sử dụng của KiotViet và so sánh với giải pháp MT-GRMS.
+title: Phân tích Đối thủ toàn diện - KiotViet vs MT-GRMS
+description: Báo cáo phân tích hệ thống KiotViet dựa trên tài liệu HDSD (cập nhật mới nhất), so sánh chi tiết với 26 nhóm tính năng của dự án MT-GRMS.
 ---
 
-# 🚀 Phân tích Hệ thống KiotViet và So sánh với MT-GRMS
+# 🚀 Phân tích Hệ thống KiotViet và So sánh Toàn diện với MT-GRMS
 
-**Tài liệu tham khảo:** [KiotViet - Hướng dẫn sử dụng tính năng Hàng hóa Lô – Hạn sử dụng](file:///d:/01_DU_AN/Do_an_fall26/KiotViet%20-%20Ph%E1%BA%A7n%20m%E1%BB%81m%20qu%E1%BA%A3n%20l%C3%BD%20b%C3%A1n%20h%C3%A0ng%20Ph%E1%BB%95%20Bi%E1%BA%BFn%20Nh%E1%BA%A5t.html)
-
----
-
-## 1. Phân tích Tính năng cốt lõi của KiotViet (Hàng hóa Lô - Hạn sử dụng)
-
-Tính năng quản lý theo Lô và Hạn sử dụng của KiotViet được thiết kế phục vụ các ngành hàng có vòng đời sản phẩm ngắn hạn như: Tạp hóa, Siêu thị mini, Mỹ phẩm, Mẹ & Bé, Nhà thuốc, Thực phẩm.
-
-### 1.1 Lợi ích nổi bật
-- **Kiểm soát Tồn kho minh bạch:** Quản lý số lượng và giá vốn chi tiết đến từng lô hàng. Mọi giao dịch nhập, xuất, chuyển, hủy đều được theo vết theo lô để tránh thất thoát.
-- **Tối ưu Xuất kho (FEFO):** Hệ thống tự động gợi ý xuất bán các lô hàng có hạn sử dụng gần nhất theo nguyên tắc FEFO (First Expired, First Out - Hết hạn trước, Xuất trước). 
-- **Cảnh báo Thông minh:** KiotViet cung cấp cảnh báo bằng màu sắc (vàng: sắp hết hạn, đỏ: đã hết hạn) ngay trên màn hình bán hàng POS, giúp nhân viên chủ động đẩy bán hoặc xả hàng.
-
-### 1.2 Các thao tác và luồng nghiệp vụ cơ bản
-- **Thiết lập:** Cần phải bật tính năng "Quản lý tồn kho theo Lô, hạn sử dụng" trong mục Thiết lập cửa hàng.
-- **Thêm mới Hàng hóa:** Có tuỳ chọn (checkbox) `Quản lý theo lô, hạn sử dụng`.
-- **Nhập hàng:** Phải nhập thông tin *Tên Lô*, *Hạn sử dụng*, *Số lượng* và *Đơn giá* chi tiết cho lô đó khi tạo phiếu Nhập hàng.
-- **Bán hàng / POS:** Khi đưa sản phẩm vào giỏ hàng, hệ thống tự động chọn lô theo quy tắc FEFO. Nhân viên thu ngân (cashier) vẫn có quyền chọn lại một lô khác thông qua pop-up thả xuống.
-- **Các nghiệp vụ khác:** Hỗ trợ tính năng lô cho Trả hàng, Chuyển kho, Kiểm kho và Xuất hủy.
-
-### 1.3 Nền tảng hỗ trợ
-KiotViet phát triển một hệ sinh thái đầy đủ:
-- Giao diện Web App cho Quản trị viên (Admin).
-- Ứng dụng di động (KiotViet App) để xem báo cáo, thêm hàng, bán hàng lưu động.
-- Máy POS Android dành riêng cho quầy thu ngân.
+**Nguồn dữ liệu:** Dựa trên tập dữ liệu 189 tài liệu hướng dẫn sử dụng gốc của KiotViet đã được thu thập và làm sạch, đối chiếu với danh sách 26 tính năng (WBS) của dự án **Multi-Tenant Grocery Retail Management System (MT-GRMS)**.
 
 ---
 
-## 2. So sánh KiotViet với Hệ thống MT-GRMS
+## 1. Kiến trúc Hệ thống & Mô hình kinh doanh (System Architecture)
 
-| Tiêu chí | KiotViet (Giải pháp Thương mại) | MT-GRMS (Dự án SEP490-G84) |
-| --- | --- | --- |
-| **Mục tiêu Khách hàng** | Đa ngành nghề, từ cửa hàng bán lẻ nhỏ đến chuỗi doanh nghiệp lớn, đa dạng nhiều lĩnh vực (F&B, Khách sạn, Bán lẻ). | Tập trung chuyên sâu cho **Tạp hóa, Siêu thị mini vừa và nhỏ** (GAP-01, GAP-02). |
-| **Mô hình Dịch vụ** | Thu phí bản quyền định kỳ (Subscription) khá cao, có nhiều gói dịch vụ phức tạp. | SaaS Multi-Tenant với chi phí triển khai được tối ưu hóa cho hộ kinh doanh nhỏ lẻ, đơn giản trong việc kích hoạt. |
-| **Quản lý Hạn sử dụng (FEFO)** | Hỗ trợ toàn diện, cảnh báo màu sắc tại màn hình POS, tự động gợi ý xuất lô theo FEFO. | Tính năng **FE-02** & **FE-12** hỗ trợ triệt để FEFO tương tự như KiotViet. Đặc biệt tập trung vào việc giảm ùn tắc POS. |
-| **Giao diện & Cấu hình** | Hệ thống cồng kềnh, nhiều chức năng dư thừa đối với một tiệm tạp hóa nhỏ, làm tăng độ phức tạp (learning curve). | Tối giản, tập trung giải quyết đúng **Pain points** (GAPs) giúp chủ cửa hàng dễ dàng thao tác mà không cần kiến thức IT/Kế toán. |
-| **Thanh toán & POS** | Hỗ trợ nhiều kênh, thanh toán QR tĩnh/động. | Tính năng **FE-13** tích hợp VietQR động với **âm thanh thông báo giao dịch**, nhắm vào tốc độ xử lý nhanh lúc cao điểm (GAP-06). |
-| **Công nghệ Hỗ trợ** | Các công nghệ phần mềm truyền thống, có app mobile, POS hardware. | Áp dụng công nghệ hiện đại, có cả **AI LLM (FE-21)** gợi ý bán hàng thông minh dựa trên intent của khách hàng. |
-| **Quản lý Nợ & Sổ Quỹ** | Có các module kế toán nâng cao phức tạp, hạch toán và liên kết hóa đơn điện tử. | Đơn giản hóa qua tính năng **FE-08** & **FE-09** tập trung vào Sổ quỹ tiền mặt và cảnh báo hạn mức nợ dễ hiểu cho chủ cửa hàng. |
+### KiotViet
+- **Mô hình:** Phần mềm quản lý bán hàng đa ngành nghề, cung cấp dưới dạng SaaS nhưng chia thành nhiều phiên bản cực kỳ phức tạp (Ngành F&B, Ngành Tạp hóa, Ngành Thời trang, Salon...).
+- **Cơ sở hạ tầng:** Hệ sinh thái đồ sộ bao gồm Web Admin, App Mobile (Quản lý/Bán hàng/Nhân viên), và máy POS chuyên dụng phần cứng. 
+- **Phân quyền & Quản lý:** Có tính năng phân quyền chi nhánh (Quản lý chi nhánh) nhưng cơ chế tạo "Gian hàng" tốn nhiều công sức để thiết lập ban đầu.
+
+### MT-GRMS (Tính năng FE-11 & FE-22)
+- **Mô hình:** Chuyên biệt 100% cho Tạp hóa/Siêu thị mini (Grocery). Sử dụng kiến trúc **Multi-Tenant SaaS (FE-22)** với `TenantId` trong DB. Một mã nguồn duy nhất phục vụ hàng ngàn chủ cửa hàng.
+- **Điểm mạnh MT-GRMS:** Triển khai **Soft-Lock/Hard-Lock (FE-24)** tài khoản khi hết hạn Subscription tự động. Đăng ký và cấp phát cửa hàng (Provisioning) siêu tốc (Self-serve) mà không cần qua sale tư vấn như KiotViet.
+
+---
+
+## 2. Quản lý Tồn kho, Lô hàng & Hạn sử dụng (Inventory & FEFO)
+
+### KiotViet
+- Hỗ trợ quản lý Tồn kho theo lô, cảnh báo hạn sử dụng bằng màu sắc (Vàng/Đỏ) tại màn hình POS.
+- Có luồng chuyển kho nội bộ, kiểm kho và xuất hủy.
+
+### MT-GRMS (Tính năng FE-02, FE-04, FE-05, FE-15)
+- **Kế thừa tinh hoa:** MT-GRMS cũng áp dụng cơ chế **FEFO (FE-02)**, tự động gợi ý xuất lô cũ nhất.
+- **Cải tiến khác biệt:** Cung cấp **Background Job cảnh báo hàng sắp hết date (FE-02.3)** để tự động đề xuất tạo "Chương trình khuyến mãi thanh lý" thay vì chỉ cảnh báo thụ động.
+- **Luân chuyển nội bộ (FE-15):** Quản lý chi tiết việc chuyển hàng giữa các kho, ghi nhận hao hụt thực tế dọc đường đi.
 
 ---
 
-## 3. Bài học & Định hướng áp dụng cho MT-GRMS
+## 3. Bán hàng (POS) & Thanh toán Đa kênh (Payments)
 
-Từ việc phân tích tính năng của KiotViet, dự án MT-GRMS có thể học hỏi và áp dụng những điểm sau để thiết kế hệ thống tối ưu hơn:
+### KiotViet
+- Màn hình POS phức tạp do ôm đồm tính năng của nhiều ngành (ghép bàn của F&B, giao hàng của Thời trang...).
+- Tích hợp **VietQRGlobal - NAPAS** rất mạnh mẽ, không cần máy POS cà thẻ (Hardware-zero).
 
-1. **Giao diện POS trực quan:** Áp dụng nguyên lý hiển thị cảnh báo bằng màu sắc (Traffic Light Concept - Đỏ/Vàng/Xanh) cho các lô hàng cận date ngay tại màn hình thanh toán POS để nhân viên dễ dàng nhận diện.
-2. **Quyền linh hoạt khi chọn Lô (FEFO):** Mặc dù hệ thống MT-GRMS sẽ tự động chọn lô cận date nhất (FEFO), nhưng vẫn phải cho phép nhân viên thao tác ghi đè (override) để chọn lô khác trong trường hợp hàng thực tế trên kệ không khớp, tương tự cách pop-up chọn lô của KiotViet hoạt động.
-3. **Luồng dữ liệu đồng nhất:** Phải thiết kế Database để mọi bảng nghiệp vụ như `PurchaseOrderDetails`, `InvoiceDetails`, `StockOnHand` đều phải tham chiếu trực tiếp đến `Batches` (ID của lô) nhằm theo vết chính xác dòng đời của sản phẩm.
-4. **Loại bỏ sự rườm rà:** MT-GRMS sẽ không đưa các tùy chọn phức tạp (ví dụ: cài đặt thuế phức tạp đa tầng) vào giao diện thiết lập hàng hóa, nhằm giúp người dùng có thể kích hoạt tính năng Lô/Hạn sử dụng chỉ với 1 cú click.
+### MT-GRMS (Tính năng FE-12, FE-13)
+- **POS Thuần Tạp hóa (FE-12):** Giao diện quét mã vạch (Barcode/SKU) tối giản đến mức tối đa để giảm ùn tắc giờ cao điểm.
+- **Thanh toán VietQR Động (FE-13):** Tích hợp webhook xác nhận tiền tự động, kèm **phát âm thanh thông báo (Audio Notification)** ngay tại quầy thu ngân để thu ngân không cần nhìn màn hình hay điện thoại xác nhận.
 
 ---
-*Tài liệu được phân tích và trích xuất để làm kiến thức cơ sở (Knowledge Base) định hướng thiết kế UI/UX và logic cho phân hệ Quản lý Hàng hóa của MT-GRMS.*
+
+## 4. Tích hợp Trí tuệ Nhân tạo (AI Integration)
+
+### KiotViet
+- KiotViet hiện có **"Trợ lý KiCi"**: Là một chatbot AI dùng để hỏi đáp, tra cứu doanh thu, báo cáo bằng ngôn ngữ tự nhiên. KiCi thiên về "Quản trị/Báo cáo".
+
+### MT-GRMS (Tính năng FE-21)
+- **Intent-Based AI Recommender (FE-21):** Thay vì làm AI cho người quản lý, MT-GRMS tích hợp AI LLM trực tiếp vào POS để **Tăng doanh thu (Upsell)**.
+- **Cơ chế hoạt động:** Khi khách hàng yêu cầu "Tôi muốn mua đồ làm tiệc sinh nhật 500k", AI sẽ quét kho (FEFO + Stock > 0) và dùng thuật toán Greedy Knapsack kết hợp LLM để ngay lập tức gợi ý ra giỏ hàng tối ưu và push thẳng vào POS. 
+
+---
+
+## 5. Hệ sinh thái Mở rộng & Khác biệt
+
+### CRM & Khuyến mãi (FE-08, FE-16)
+- KiotViet có thẻ thành viên và Zalo ZNS. 
+- **MT-GRMS:** Tích hợp việc tự động lên hạng thành viên theo chi tiêu, kết hợp cùng cảnh báo nợ (Overdue warnings). 
+
+### Mini Web Store (FE-26) vs Bán online KiotViet
+- KiotViet tích hợp đa kênh (Shopee, Lazada, Facebook, Zalo). Rất nặng và đòi hỏi cấu hình API phức tạp.
+- **MT-GRMS:** Cung cấp sẵn một **Mini Web Store (FE-26)** nhẹ gọn (Click & Collect hoặc GHN integration). Cửa hàng tạp hoá nhỏ chỉ cần ném link cho khách quen trong chung cư tự đặt đồ, không cần tạo gian hàng Shopee rườm rà.
+
+---
+
+## Tổng kết Bài học cho Thiết kế Hệ thống MT-GRMS
+
+1. **Keep it Simple:** Tài liệu HDSD của KiotViet lên tới 189 trang do họ phải giải thích hàng ngàn thiết lập. MT-GRMS phải ẩn đi mọi thiết lập rườm rà, áp dụng tư duy "Cấu hình mặc định thông minh" (Convention over Configuration).
+2. **VietQR là Cốt lõi:** Thanh toán không tiền mặt bằng mã QR động là vũ khí giúp MT-GRMS cạnh tranh sòng phẳng tại quầy POS, nhất định phải làm tính năng phát âm thanh (`FE-13.3`).
+3. **Phát huy lợi thế AI POS:** AI Recommender (`FE-21`) là tính năng Unique Selling Proposition (USP) để thuyết phục khách hàng chuyển từ KiotViet sang MT-GRMS. Phải đảm bảo latency của AI < 3s bằng Redis Cache.
+4. **SaaS Tự Động Hóa:** Giảm chi phí vận hành bằng cách code tự động hoá việc nhắc nợ gói cước (`FE-23`) và khoá tài khoản (`FE-24`), điều mà KiotViet thường dùng nhân viên Telesale để làm.
