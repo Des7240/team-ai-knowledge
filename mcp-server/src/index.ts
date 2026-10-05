@@ -12,6 +12,8 @@ import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/
 import { createMcpExpressApp } from '@modelcontextprotocol/sdk/server/express.js';
 import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprotocol/sdk/types.js';
 import path from 'path';
+import express from 'express';
+import { glob } from 'glob';
 
 import { LocalProvider } from './providers/localProvider.js';
 import { GitHubProvider } from './providers/gitHubProvider.js';
@@ -127,12 +129,13 @@ const TOOL_DEFINITIONS = [
       type: 'object' as const,
       properties: {
         projectName: { type: 'string', description: 'Tên dự án' },
+        epicOrFeature: { type: 'string', description: 'Tên Epic hoặc Feature để phân nhóm trong SESSION_INDEX.md' },
         title: { type: 'string', description: 'Tiêu đề ngắn gọn cho phiên' },
         goals: { type: 'array', items: { type: 'string' }, description: 'Mục tiêu ban đầu của phiên' },
         filesChanged: { type: 'array', items: { type: 'string' }, description: 'Danh sách các file bị thay đổi' },
         summary: { type: 'string', description: 'Nội dung tóm tắt chi tiết của phiên' },
       },
-      required: ['projectName', 'title', 'goals', 'summary'],
+      required: ['projectName', 'epicOrFeature', 'title', 'goals', 'summary'],
     },
   },
   {
@@ -301,6 +304,7 @@ function registerHandlers(server: Server, handlers: ToolHandlers): void {
         case 'luu_phien_lam_viec': {
           const sessionParams = args as {
             projectName: string;
+            epicOrFeature: string;
             title: string;
             goals: string[];
             filesChanged?: string[];
@@ -541,6 +545,36 @@ async function startHttpMode(handlers: ToolHandlers): Promise<void> {
       error: { code: -32000, message: 'Method not allowed.' },
       id: null,
     }));
+  });
+
+  // Serve static UI for Map
+  const publicPath = path.join(import.meta.dirname, '..', 'public');
+  app.use(express.static(publicPath));
+
+  // API to get KB Tree
+  app.get('/api/map', async (req, res) => {
+    try {
+      const kbRoot = process.env.KB_ROOT || path.join(import.meta.dirname, '..', '..');
+      const files = await glob('**/*.md', { cwd: kbRoot, ignore: ['node_modules/**', 'mcp-server/**'] });
+      
+      const tree: any = {};
+      files.forEach(file => {
+        const parts = file.split(/[\\/]/);
+        let current = tree;
+        for (let i = 0; i < parts.length; i++) {
+          const part = parts[i];
+          if (i === parts.length - 1) {
+            current[part] = file;
+          } else {
+            current[part] = current[part] || {};
+            current = current[part];
+          }
+        }
+      });
+      res.json({ status: 'ok', tree });
+    } catch (error: any) {
+      res.status(500).json({ status: 'error', message: error.message });
+    }
   });
 
   // Health check endpoint

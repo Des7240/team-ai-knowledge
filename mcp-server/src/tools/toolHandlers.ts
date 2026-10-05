@@ -206,12 +206,13 @@ export function createToolHandlers(provider: DataProvider) {
    */
   async function handleLuuPhienLamViec(params: {
     projectName: string;
+    epicOrFeature: string;
     title: string;
     goals: string[];
     filesChanged?: string[];
     summary: string;
   }): Promise<string> {
-    const { projectName, title, goals, filesChanged, summary } = params;
+    const { projectName, epicOrFeature, title, goals, filesChanged, summary } = params;
     const resolvedProject = await resolveProjectName(projectName);
 
     const date = new Date().toISOString().split('T')[0];
@@ -224,6 +225,7 @@ export function createToolHandlers(provider: DataProvider) {
       `date: "${date}"`,
       `author: AI-Agent`,
       `project: ${projectName}`,
+      `epic: "${epicOrFeature}"`,
       `goals: ${JSON.stringify(goals)}`,
       `status: completed`,
       `files_changed: ${JSON.stringify(filesChanged || [])}`,
@@ -236,7 +238,24 @@ export function createToolHandlers(provider: DataProvider) {
     ].join('\n');
 
     await provider.writeFile(targetPath, content);
-    return `✅ Session summary successfully saved to: ${targetPath}`;
+
+    // Update SESSION_INDEX.md
+    const indexPath = `projects/${resolvedProject}/SESSION_INDEX.md`;
+    const indexDoc = await readMarkdown(indexPath);
+    let indexContent = indexDoc ? (indexDoc.frontmatter ? matter.stringify(indexDoc.content, indexDoc.frontmatter) : indexDoc.content) : `# Bảng theo dõi Phiên làm việc\n`;
+    
+    const epicHeader = `## [Epic] ${epicOrFeature}`;
+    if (!indexContent.includes(epicHeader)) {
+      indexContent += `\n${epicHeader}\n`;
+    }
+    
+    const sessionLink = `- [${date} - ${title}](./sessions/${fileName})`;
+    const parts = indexContent.split(epicHeader);
+    indexContent = parts[0] + epicHeader + '\n' + sessionLink + (parts[1].startsWith('\n') ? parts[1] : '\n' + parts[1]);
+    
+    await provider.writeFile(indexPath, indexContent);
+
+    return `✅ Session summary successfully saved to: ${targetPath} and indexed in SESSION_INDEX.md`;
   }
 
   /**
