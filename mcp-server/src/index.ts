@@ -533,8 +533,9 @@ async function startStdioMode(handlers: ToolHandlers): Promise<void> {
 /**
  * Starts MCP Server in HTTP mode (remote / Render).
  * @param handlers - Tool handlers.
+ * @param provider - Data provider for serving UI endpoints.
  */
-async function startHttpMode(handlers: ToolHandlers): Promise<void> {
+async function startHttpMode(handlers: ToolHandlers, provider: DataProvider): Promise<void> {
   const port = parseInt(process.env.PORT || '3100', 10);
 
   const app = createMcpExpressApp({ host: '0.0.0.0' });
@@ -594,8 +595,8 @@ async function startHttpMode(handlers: ToolHandlers): Promise<void> {
   // API to get KB Tree
   app.get('/api/map', async (req, res) => {
     try {
-      const kbRoot = process.env.KB_ROOT || path.join(import.meta.dirname, '..', '..');
-      const files = await glob('**/*.md', { cwd: kbRoot, ignore: ['node_modules/**', 'mcp-server/**'] });
+      const allFiles = await provider.listFiles('', '.md');
+      const files = allFiles.filter(f => !f.startsWith('node_modules') && !f.startsWith('mcp-server'));
       
       const tree: any = {};
       files.forEach(file => {
@@ -660,7 +661,7 @@ async function main(): Promise<void> {
   }
 
   if (mode === 'http') {
-    await startHttpMode(handlers);
+    await startHttpMode(handlers, provider);
   } else {
     await startStdioMode(handlers);
   }
