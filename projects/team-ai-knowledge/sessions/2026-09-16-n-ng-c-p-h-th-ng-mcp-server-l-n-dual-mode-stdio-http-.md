@@ -1,12 +1,27 @@
 ---
 id: SES-2026-09-16-709
-date: "2026-09-16"
+date: '2026-09-16'
 author: AI-Agent
 project: team-ai-knowledge
-goals: ["Bổ sung kết nối qua HTTP cho MCP Server","Tạo DataProvider interface (LocalProvider, GitHubProvider)","Hỗ trợ auto-detect theo biến môi trường"]
+goals:
+  - Bổ sung kết nối qua HTTP cho MCP Server
+  - 'Tạo DataProvider interface (LocalProvider, GitHubProvider)'
+  - Hỗ trợ auto-detect theo biến môi trường
 status: completed
-files_changed: ["mcp-server/src/providers/dataProvider.ts","mcp-server/src/providers/localProvider.ts","mcp-server/src/providers/gitHubProvider.ts","mcp-server/src/tools/toolHandlers.ts","mcp-server/src/index.ts",".mcp.json.template","README.md","system_flow.md","render_deployment_guide.md"]
-tags: [session, summary]
+files_changed:
+  - mcp-server/src/providers/dataProvider.ts
+  - mcp-server/src/providers/localProvider.ts
+  - mcp-server/src/providers/gitHubProvider.ts
+  - mcp-server/src/tools/toolHandlers.ts
+  - mcp-server/src/index.ts
+  - .mcp.json.template
+  - README.md
+  - system_flow.md
+  - render_deployment_guide.md
+tags:
+  - session
+  - summary
+epic: Legacy
 ---
 
 # Session Summary: Nâng cấp hệ thống MCP Server lên Dual-Mode (Stdio + HTTP)

@@ -19,7 +19,9 @@ export type KBToolName =
   | 'xem_bieu_mau'
   | 'xem_khao_sat'
   | 'xem_dac_ta'
-  | 'luu_danh_gia';
+  | 'luu_danh_gia'
+  | 'doc_tai_lieu'
+  | 'sua_tai_lieu';
 
 /** Supported task types */
 export type TaskType = 'coding' | 'debug' | 'architecture' | 'general';
@@ -171,6 +173,16 @@ const KEYWORD_MAP: Record<KBToolName, KeywordEntry> = {
     ],
     baseScore: 3,
     taskTypeBoost: { coding: 2, general: 1 },
+  },
+  doc_tai_lieu: {
+    keywords: [],
+    baseScore: 0,
+    taskTypeBoost: {},
+  },
+  sua_tai_lieu: {
+    keywords: [],
+    baseScore: 0,
+    taskTypeBoost: {},
   }
 };
 

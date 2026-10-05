@@ -1,12 +1,20 @@
 ---
 id: SES-2026-09-21-404
-date: "2026-09-21"
+date: '2026-09-21'
 author: AI-Agent
 project: Multi-Tenant Grocery Retail Management System (MT-GRMS)
-goals: ["Hiểu tổng quan dự án MT-GRMS","Làm rõ scope của các chức năng liên quan đến Thuế, Tài chính, và Khách hàng (do Nguyễn Trường An phụ trách)","Kiểm tra và cập nhật tài liệu Product Background"]
+goals:
+  - Hiểu tổng quan dự án MT-GRMS
+  - >-
+    Làm rõ scope của các chức năng liên quan đến Thuế, Tài chính, và Khách hàng
+    (do Nguyễn Trường An phụ trách)
+  - Kiểm tra và cập nhật tài liệu Product Background
 status: completed
 files_changed: []
-tags: [session, summary]
+tags:
+  - session
+  - summary
+epic: Legacy
 ---
 
 # Session Summary: Làm rõ requirement và scope cho module Kế toán & CRM

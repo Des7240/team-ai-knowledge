@@ -1,12 +1,21 @@
 ---
 id: SES-2026-10-01-262
-date: "2026-10-01"
+date: '2026-10-01'
 author: AI-Agent
 project: MT-GRMS
-goals: ["Chuyển đổi bối cảnh dự án từ Customize sang Mass Market","Loại bỏ tính năng bán online (Mini Web Store) và AI khỏi phạm vi bối cảnh","Cấu trúc lại Product Background theo 6 problems chuẩn dự án, sử dụng format Evidence-based/Data-driven cho các vấn đề cốt lõi"]
+goals:
+  - Chuyển đổi bối cảnh dự án từ Customize sang Mass Market
+  - Loại bỏ tính năng bán online (Mini Web Store) và AI khỏi phạm vi bối cảnh
+  - >-
+    Cấu trúc lại Product Background theo 6 problems chuẩn dự án, sử dụng format
+    Evidence-based/Data-driven cho các vấn đề cốt lõi
 status: completed
-files_changed: ["d:\\01_DU_AN\\Do_an_fall26\\Report-1_Project Introduction.docx.md"]
-tags: [session, summary]
+files_changed:
+  - 'd:\01_DU_AN\Do_an_fall26\Report-1_Project Introduction.docx.md'
+tags:
+  - session
+  - summary
+epic: Legacy
 ---
 
 # Session Summary: Cập nhật Product Background sang định hướng Mass Market và cấu trúc Data-driven

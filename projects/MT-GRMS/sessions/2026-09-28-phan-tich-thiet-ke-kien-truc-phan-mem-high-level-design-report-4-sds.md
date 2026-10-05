@@ -1,12 +1,20 @@
 ---
 id: SES-2026-09-28-557
-date: "2026-09-28"
+date: '2026-09-28'
 author: AI-Agent
 project: MT-GRMS
-goals: ["Phân tích thiết kế hệ thống theo mẫu High Level Design và Software Architecture từ ảnh của người dùng"]
+goals:
+  - >-
+    Phân tích thiết kế hệ thống theo mẫu High Level Design và Software
+    Architecture từ ảnh của người dùng
 status: completed
-files_changed: ["Document/report/Report-4_Software_Design_Specification.md","Document/report/README.md"]
-tags: [session, summary]
+files_changed:
+  - Document/report/Report-4_Software_Design_Specification.md
+  - Document/report/README.md
+tags:
+  - session
+  - summary
+epic: Legacy
 ---
 
 # Session Summary: Phân tích thiết kế kiến trúc phần mềm High Level Design Report 4 SDS

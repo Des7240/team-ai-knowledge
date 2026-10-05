@@ -460,6 +460,50 @@ export function createToolHandlers(provider: DataProvider) {
     return `✅ Verification report successfully saved to: ${targetPath}`;
   }
 
+  /**
+   * Handles doc_tai_lieu — reads any file.
+   */
+  async function handleDocTaiLieu(path: string): Promise<string> {
+    const raw = await provider.readFile(path);
+    if (!raw) return `Error: File not found at ${path}`;
+    return raw;
+  }
+
+  /**
+   * Handles sua_tai_lieu — edits a file and updates the changelog frontmatter.
+   */
+  async function handleSuaTaiLieu(params: { path: string; content: string; author: string; reason: string; impact: string }): Promise<string> {
+    const { path, content, author, reason, impact } = params;
+    
+    let raw = await provider.readFile(path);
+    let doc: ParsedMarkdown;
+    if (raw) {
+      const parsed = matter(raw);
+      doc = { frontmatter: parsed.data, content: parsed.content };
+    } else {
+      doc = { frontmatter: {}, content: '' };
+    }
+    
+    let finalContent = content;
+    if (content.trim().startsWith('---')) {
+      const newParsed = matter(content);
+      doc.frontmatter = { ...doc.frontmatter, ...newParsed.data };
+      finalContent = newParsed.content;
+    }
+
+    if (!doc.frontmatter.changelog) {
+      doc.frontmatter.changelog = [];
+    }
+    
+    const date = new Date().toISOString();
+    doc.frontmatter.changelog.push({ date, author, reason, impact });
+    
+    const fullText = matter.stringify(finalContent, doc.frontmatter);
+    await provider.writeFile(path, fullText);
+    
+    return `✅ File ${path} successfully updated and changelog appended.`;
+  }
+
   return {
     readMarkdown,
     searchMarkdownFiles,
@@ -478,6 +522,8 @@ export function createToolHandlers(provider: DataProvider) {
     handleXemKhaoSat,
     handleXemDacTa,
     handleLuuDanhGia,
+    handleDocTaiLieu,
+    handleSuaTaiLieu,
   };
 }
 

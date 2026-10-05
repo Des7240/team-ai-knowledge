@@ -1,12 +1,23 @@
 ---
 id: SES-2026-09-28-190
-date: "2026-09-28"
+date: '2026-09-28'
 author: AI-Agent
 project: MT-GRMS
-goals: ["Bổ sung tài liệu tổng quan toàn diện về Report 1 (Project Introduction) và Report 2 (Project Management Plan) vào thư mục Document/report"]
+goals:
+  - >-
+    Bổ sung tài liệu tổng quan toàn diện về Report 1 (Project Introduction) và
+    Report 2 (Project Management Plan) vào thư mục Document/report
 status: completed
-files_changed: ["Document/report/Tong_Quan_Report_1_va_Report_2.md","Document/report/Report-1_Project_Introduction.md","Document/report/Report-2_Project_Management_Plan.md","Document/report/README.md","Document/report/Tong_Quan_Thiet_Ke_He_Thong.md"]
-tags: [session, summary]
+files_changed:
+  - Document/report/Tong_Quan_Report_1_va_Report_2.md
+  - Document/report/Report-1_Project_Introduction.md
+  - Document/report/Report-2_Project_Management_Plan.md
+  - Document/report/README.md
+  - Document/report/Tong_Quan_Thiet_Ke_He_Thong.md
+tags:
+  - session
+  - summary
+epic: Legacy
 ---
 
 # Session Summary: Bổ sung tổng quan và hồ sơ Báo cáo 1 & 2 vào Document/report

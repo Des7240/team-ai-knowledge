@@ -253,6 +253,32 @@ const TOOL_DEFINITIONS = [
       required: ['chatContext'],
     },
   },
+  {
+    name: 'doc_tai_lieu',
+    description: 'Đọc nội dung của bất kỳ tài liệu nào trong Knowledge Base.',
+    inputSchema: {
+      type: 'object' as const,
+      properties: {
+        path: { type: 'string', description: 'Đường dẫn tương đối của file cần đọc (vd: projects/MT-GRMS/README.md)' }
+      },
+      required: ['path'],
+    },
+  },
+  {
+    name: 'sua_tai_lieu',
+    description: 'Chỉnh sửa/ghi đè nội dung của một tài liệu hiện có và tự động ghi log vào phần YAML frontmatter.',
+    inputSchema: {
+      type: 'object' as const,
+      properties: {
+        path: { type: 'string', description: 'Đường dẫn tương đối của file cần sửa' },
+        content: { type: 'string', description: 'Nội dung mới hoàn chỉnh của file (không cần bao gồm YAML frontmatter cũ, hệ thống sẽ tự merge)' },
+        author: { type: 'string', description: 'Tên hoặc ID của người sửa (AI/Dev)' },
+        reason: { type: 'string', description: 'Lý do sửa đổi' },
+        impact: { type: 'string', description: 'Tác động của lần sửa đổi này' }
+      },
+      required: ['path', 'content', 'author', 'reason', 'impact'],
+    },
+  },
 ];
 
 /**
@@ -408,6 +434,16 @@ function registerHandlers(server: Server, handlers: ToolHandlers): void {
           };
         }
 
+        case 'doc_tai_lieu': {
+          const { path } = args as { path: string };
+          return { content: [{ type: 'text' as const, text: await handlers.handleDocTaiLieu(path) }] };
+        }
+
+        case 'sua_tai_lieu': {
+          const editParams = args as { path: string; content: string; author: string; reason: string; impact: string };
+          return { content: [{ type: 'text' as const, text: await handlers.handleSuaTaiLieu(editParams) }] };
+        }
+
         default:
           throw new Error(`Unknown tool: ${name}`);
       }
@@ -464,6 +500,10 @@ async function executeToolIntent(intent: ToolIntent, handlers: ToolHandlers): Pr
         return await handlers.handleXemDacTa(params.specId as string);
       case 'luu_danh_gia':
         return await handlers.handleLuuDanhGia(params as any);
+      case 'doc_tai_lieu':
+        return await handlers.handleDocTaiLieu(params.path as string);
+      case 'sua_tai_lieu':
+        return await handlers.handleSuaTaiLieu(params as any);
       default:
         return `Unknown tool: ${toolName}`;
     }

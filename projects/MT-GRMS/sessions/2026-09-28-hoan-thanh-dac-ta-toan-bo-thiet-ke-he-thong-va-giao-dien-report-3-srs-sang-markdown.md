@@ -1,12 +1,25 @@
 ---
 id: SES-2026-09-28-694
-date: "2026-09-28"
+date: '2026-09-28'
 author: AI-Agent
 project: MT-GRMS
-goals: ["Phân tích toàn bộ các thiết kế trong các file PDF báo cáo đồ án (Report 1, Report 2, Report 3)","Đặc tả và mô tả chi tiết toàn bộ thiết kế hệ thống vào file Markdown trong thư mục Document/report"]
+goals:
+  - >-
+    Phân tích toàn bộ các thiết kế trong các file PDF báo cáo đồ án (Report 1,
+    Report 2, Report 3)
+  - >-
+    Đặc tả và mô tả chi tiết toàn bộ thiết kế hệ thống vào file Markdown trong
+    thư mục Document/report
 status: completed
-files_changed: ["Document/report/Report-3_Software_Requirement_Specification.md","Document/report/Tong_Quan_Thiet_Ke_He_Thong.md","Document/report/README.md","Document/report/images/*"]
-tags: [session, summary]
+files_changed:
+  - Document/report/Report-3_Software_Requirement_Specification.md
+  - Document/report/Tong_Quan_Thiet_Ke_He_Thong.md
+  - Document/report/README.md
+  - Document/report/images/*
+tags:
+  - session
+  - summary
+epic: Legacy
 ---
 
 # Session Summary: Hoàn thành đặc tả toàn bộ thiết kế hệ thống và giao diện Report 3 SRS sang Markdown

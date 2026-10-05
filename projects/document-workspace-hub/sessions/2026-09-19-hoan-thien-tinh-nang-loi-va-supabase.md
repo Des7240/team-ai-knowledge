@@ -1,12 +1,22 @@
 ---
 id: SES-2026-09-19-855
-date: "2026-09-19"
+date: '2026-09-19'
 author: AI-Agent
 project: document-workspace-hub
-goals: ["Hoàn thiện giao diện Neumorphism","Kết nối và tối ưu Database Supabase","Khắc phục lỗi nhúng Iframe cho Google Drive"]
+goals:
+  - Hoàn thiện giao diện Neumorphism
+  - Kết nối và tối ưu Database Supabase
+  - Khắc phục lỗi nhúng Iframe cho Google Drive
 status: completed
-files_changed: ["src/ui.js","src/api.js","src/main.js","index.html"]
-tags: [session, summary]
+files_changed:
+  - src/ui.js
+  - src/api.js
+  - src/main.js
+  - index.html
+tags:
+  - session
+  - summary
+epic: Legacy
 ---
 
 # Session Summary: Hoàn thiện tính năng lõi và Supabase

@@ -1,12 +1,16 @@
 ---
 id: SES-2026-09-22-379
-date: "2026-09-22"
+date: '2026-09-22'
 author: AI-Agent
 project: MT-GRMS
-goals: ["Phân tích tài liệu phân công công việc Report 3 (SRS) cho dự án MT-GRMS"]
+goals:
+  - Phân tích tài liệu phân công công việc Report 3 (SRS) cho dự án MT-GRMS
 status: completed
 files_changed: []
-tags: [session, summary]
+tags:
+  - session
+  - summary
+epic: Legacy
 ---
 
 # Session Summary: phan-tich-phan-cong-cong-viec-report-3-srs

@@ -1,12 +1,22 @@
 ---
 id: SES-2026-10-02-272
-date: "2026-10-02"
+date: '2026-10-02'
 author: AI-Agent
 project: MT-GRMS (Đồ án Fall 26)
-goals: ["Kiểm tra tính đầy đủ của DB Design SVG so với tính năng của Dev Nguyễn Trường An","So sánh thiết kế thực tế (schema.json) và bản vẽ (SVG)","Giải thích các thiết kế liên quan: Multi-tenant, Sổ quỹ, Báo cáo thuế, Công nợ"]
+goals:
+  - >-
+    Kiểm tra tính đầy đủ của DB Design SVG so với tính năng của Dev Nguyễn
+    Trường An
+  - So sánh thiết kế thực tế (schema.json) và bản vẽ (SVG)
+  - >-
+    Giải thích các thiết kế liên quan: Multi-tenant, Sổ quỹ, Báo cáo thuế, Công
+    nợ
 status: completed
 files_changed: []
-tags: [session, summary]
+tags:
+  - session
+  - summary
+epic: Legacy
 ---
 
 # Session Summary: Rà soát Database Design cho phần việc của Nguyễn Trường An
