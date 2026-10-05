@@ -4,8 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Team AI Knowledge Base - Explorer</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f8fafc; }
@@ -13,40 +14,73 @@
     .tree-node:hover { background-color: #1e293b; }
     .icon-folder { color: #3b82f6; }
     .icon-file { color: #94a3b8; }
+    .custom-scrollbar::-webkit-scrollbar { width: 8px; height: 8px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: #0f172a; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #475569; }
+    
+    /* Markdown Styles overriding typography for dark mode */
+    .prose { max-width: none !important; }
+    .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 { color: #f8fafc !important; }
+    .prose strong { color: #e2e8f0 !important; }
+    .prose a { color: #38bdf8 !important; text-decoration: none; }
+    .prose a:hover { text-decoration: underline; }
+    .prose code { color: #38bdf8 !important; background: #1e293b; padding: 0.2em 0.4em; border-radius: 3px; }
+    .prose pre { background-color: #0f172a !important; border: 1px solid #334155; }
+    .prose blockquote { border-left-color: #3b82f6 !important; color: #cbd5e1 !important; }
+    .prose table { width: 100%; border-collapse: collapse; }
+    .prose th, .prose td { border: 1px solid #334155; padding: 0.5rem; }
+    .prose th { background-color: #1e293b; }
   </style>
 </head>
 <body>
   <div id="app" class="min-h-screen flex flex-col h-screen">
     <!-- Header -->
-    <header class="bg-slate-800 border-b border-slate-700 p-4 shadow-md flex items-center justify-between">
+    <header class="bg-slate-800 border-b border-slate-700 p-4 shadow-md flex items-center justify-between z-10">
       <div class="flex items-center gap-3">
         <i class="fa-solid fa-network-wired text-blue-400 text-2xl"></i>
-        <h1 class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-teal-400">
+        <h1 class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-teal-400 cursor-pointer" @click="goHome">
           Knowledge Base Explorer
         </h1>
       </div>
-      <div class="text-slate-400 text-sm">
-        <span v-if="loading"><i class="fa-solid fa-spinner fa-spin mr-2"></i>Loading...</span>
-        <span v-else><i class="fa-solid fa-check text-green-400 mr-2"></i>Synced</span>
+      <div class="flex items-center gap-4">
+        <button @click="goHome" class="text-slate-300 hover:text-white px-3 py-1.5 rounded-md hover:bg-slate-700 transition flex items-center gap-2">
+          <i class="fa-solid fa-house"></i> Home
+        </button>
+        <div class="text-slate-400 text-sm">
+          <span v-if="loading"><i class="fa-solid fa-spinner fa-spin mr-2"></i>Loading...</span>
+          <span v-else><i class="fa-solid fa-check text-green-400 mr-2"></i>Synced</span>
+        </div>
       </div>
     </header>
 
     <!-- Main Content -->
     <main class="flex-1 flex overflow-hidden">
       <!-- Sidebar (File Tree) -->
-      <aside class="w-1/3 max-w-md bg-slate-900 border-r border-slate-700 overflow-y-auto p-4 custom-scrollbar">
+      <aside class="w-1/3 max-w-sm bg-slate-900 border-r border-slate-700 overflow-y-auto p-4 custom-scrollbar flex-shrink-0">
         <h2 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4">Repository Structure</h2>
         <div v-if="!loading" class="text-sm">
-          <tree-item class="item" :model="treeData"></tree-item>
+          <tree-item class="item" :model="treeData" :current-path="''" @file-click="handleFileClick"></tree-item>
         </div>
       </aside>
 
       <!-- Content Area -->
-      <section class="flex-1 bg-slate-800 p-8 flex items-center justify-center relative overflow-y-auto">
-        <div class="text-center text-slate-500 max-w-2xl">
+      <section class="flex-1 bg-slate-800 p-8 overflow-y-auto custom-scrollbar relative">
+        <div v-if="contentLoading" class="absolute inset-0 flex items-center justify-center bg-slate-800/80 z-10">
+          <i class="fa-solid fa-circle-notch fa-spin text-4xl text-blue-500"></i>
+        </div>
+        
+        <div v-if="selectedFile" class="max-w-4xl mx-auto">
+          <div class="mb-6 flex items-center justify-between border-b border-slate-700 pb-4">
+            <h2 class="text-lg font-mono text-slate-400"><i class="fa-brands fa-markdown mr-2"></i>{{ selectedFile }}</h2>
+          </div>
+          <div class="prose prose-invert prose-slate" v-html="renderedMarkdown"></div>
+        </div>
+        
+        <div v-else class="text-center text-slate-500 max-w-2xl mx-auto mt-20">
           <i class="fa-regular fa-folder-open text-6xl mb-4 opacity-50"></i>
-          <h2 class="text-2xl font-light mb-2">Select a node to explore</h2>
-          <p class="text-sm">This map automatically synchronizes with your MCP server's knowledge base.</p>
+          <h2 class="text-2xl font-light mb-2">Select a file to read</h2>
+          <p class="text-sm">Explore patterns, decisions, and sessions from the sidebar.</p>
         </div>
       </section>
     </main>
@@ -64,7 +98,7 @@
         </div>
         <i v-if="isFolder" class="icon-folder fa-solid mr-2" :class="isOpen ? 'fa-folder-open' : 'fa-folder'"></i>
         <i v-else class="icon-file fa-brands fa-markdown mr-2"></i>
-        <span class="truncate flex-1 font-medium group-hover:text-blue-300 transition-colors" :class="isFolder ? 'text-slate-200' : 'text-slate-400'">
+        <span class="truncate flex-1 font-medium transition-colors" :class="[isFolder ? 'text-slate-200' : 'text-slate-400', { 'text-blue-400 font-semibold': isSelected }]">
           {{ name }}
         </span>
       </div>
@@ -76,6 +110,8 @@
           :key="key"
           :model="child"
           :name="key"
+          :current-path="buildPath(key)"
+          @file-click="$emit('file-click', $event)"
         ></tree-item>
       </div>
     </div>
@@ -89,41 +125,54 @@
       template: '#item-template',
       props: {
         model: [Object, String],
-        name: {
-          type: String,
-          default: 'Knowledge Base Root'
-        }
+        name: { type: String, default: 'KB Root' },
+        currentPath: { type: String, default: '' }
       },
-      setup(props) {
-        const isOpen = ref(props.name === 'Knowledge Base Root' || props.name === 'projects');
+      emits: ['file-click'],
+      setup(props, { emit }) {
+        const isOpen = ref(props.name === 'KB Root' || props.name === 'projects' || props.name === '_global');
         
-        const isFolder = computed(() => {
-          return typeof props.model === 'object' && props.model !== null;
+        const isFolder = computed(() => typeof props.model === 'object' && props.model !== null);
+        
+        // This is a rough heuristic for active state styling
+        const isSelected = computed(() => {
+          return !isFolder.value && window.currentSelectedPath === props.model;
         });
 
         function toggle() {
           if (isFolder.value) {
             isOpen.value = !isOpen.value;
+          } else {
+            // It's a file, emit path to parent
+            window.currentSelectedPath = props.model; // global dirty state for simple UI
+            emit('file-click', props.model);
           }
         }
 
-        return {
-          isOpen,
-          isFolder,
-          toggle
+        function buildPath(childName) {
+          return props.currentPath ? `${props.currentPath}/${childName}` : childName;
         }
+
+        return { isOpen, isFolder, isSelected, toggle, buildPath }
       }
     };
 
     createApp({
-      components: {
-        TreeItem
-      },
+      components: { TreeItem },
       setup() {
         const treeData = ref({});
         const loading = ref(true);
+        const contentLoading = ref(false);
+        const selectedFile = ref(null);
+        const rawContent = ref('');
+        window.currentSelectedPath = null;
 
-        onMounted(async () => {
+        const renderedMarkdown = computed(() => {
+          if (!rawContent.value) return '';
+          return marked.parse(rawContent.value);
+        });
+
+        async function fetchTree() {
           try {
             const res = await fetch('/api/map');
             const data = await res.json();
@@ -135,11 +184,54 @@
           } finally {
             loading.value = false;
           }
+        }
+
+        async function handleFileClick(filePath) {
+          selectedFile.value = filePath;
+          contentLoading.value = true;
+          try {
+            const res = await fetch(`/api/file?path=${encodeURIComponent(filePath)}`);
+            const data = await res.json();
+            if (data.status === 'ok') {
+              // Extract content from markdown (strip yaml if you want, but for now we render it raw or in code block)
+              // marked handles yaml frontmatter poorly, let's just render the whole thing or strip it
+              let markdown = data.content;
+              
+              // Simple frontmatter stripper for better rendering
+              const match = markdown.match(/^-{3}[\s\S]+?-{3}/);
+              if (match) {
+                const frontmatter = match[0];
+                markdown = markdown.replace(frontmatter, `<pre class="text-xs text-slate-400 bg-slate-900 p-4 rounded mb-4 overflow-x-auto">${frontmatter.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>\n\n`);
+              }
+              
+              rawContent.value = markdown;
+            } else {
+              rawContent.value = `# Error\n${data.message}`;
+            }
+          } catch (err) {
+            rawContent.value = `# Error\nFailed to load file.`;
+          } finally {
+            contentLoading.value = false;
+          }
+        }
+
+        function goHome() {
+          handleFileClick('START_HERE.md');
+        }
+
+        onMounted(async () => {
+          await fetchTree();
+          goHome(); // Load START_HERE.md on init
         });
 
         return {
           treeData,
-          loading
+          loading,
+          contentLoading,
+          selectedFile,
+          renderedMarkdown,
+          handleFileClick,
+          goHome
         }
       }
     }).mount('#app')

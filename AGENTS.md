@@ -25,6 +25,8 @@ Bạn CÓ NGHĨA VỤ phải sử dụng các tools sau bằng tiếng Việt:
 | `phuc_hoi_kien_thuc(path)` | Thủ thư | Lấy lại file từ thư mục archive |
 | `xem_bieu_mau(type)` | Quản lý quy trình | **BẮT BUỘC** gọi để lấy template trước khi tạo file mới |
 | `phan_tich_ngu_canh_tu_dong(...)` | Điều phối viên | Tự phân tích ngữ cảnh chat và gọi các tool phù hợp |
+| `doc_tai_lieu(path)` | Chuyên viên | Lấy toàn bộ nội dung của một tài liệu để đọc |
+| `sua_tai_lieu(...)` | Biên tập viên | Chỉnh sửa/Ghi đè tài liệu (hệ thống tự động ghi changelog) |
 
 ---
 
@@ -104,7 +106,8 @@ Tasks tiếp theo:
 
 ### Bước 3: Lưu khi user đồng ý
 ```
-→ Gọi luu_phien_lam_viec({ projectName, title, goals, summary, filesChanged })
+→ Gọi luu_phien_lam_viec({ projectName, epicOrFeature, title, goals, summary, filesChanged })
+*Lưu ý: Bắt buộc chọn đúng epicOrFeature để phân nhóm tự động vào SESSION_INDEX.md*
 ```
 
 ### Bước 4: Đề xuất lưu bài học (nếu có bug)
@@ -117,7 +120,7 @@ Tasks tiếp theo:
 
 ## ⚠️ Nguyên tắc tuyệt đối
 
-1. **KHÔNG** tự xoá/ghi đè file KB. Thay vào đó, dùng `luu_tru_kien_thuc(path)`.
+1. **CHỈ SỬA FILE KB QUA MCP**: Sử dụng tool `sua_tai_lieu` để chỉnh sửa file KB, hệ thống sẽ tự động ghép nối changelog. (Hoặc dùng `luu_tru_kien_thuc` để cất file cũ). Không tự sửa trực tiếp bằng các tool bash/git cục bộ.
 2. **LUÔN LUÔN** gọi `xem_bieu_mau(type)` trước khi tạo tài liệu Pattern, Decision, Lesson.
 3. **LUÔN** kiểm tra bài học cũ trước khi debug để tránh lặp lại lỗi.
 4. **KHÔNG** đề xuất giải pháp trái ngược với Quyết định (ADR) đã được duyệt mà không báo trước.

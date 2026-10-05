@@ -617,6 +617,23 @@ async function startHttpMode(handlers: ToolHandlers): Promise<void> {
     }
   });
 
+  // API to read a specific file
+  app.get('/api/file', async (req, res) => {
+    try {
+      const filePath = req.query.path as string;
+      if (!filePath) {
+        return res.status(400).json({ status: 'error', message: 'Missing path parameter' });
+      }
+      const content = await handlers.handleDocTaiLieu(filePath);
+      if (content.startsWith('Error:')) {
+        return res.status(404).json({ status: 'error', message: content });
+      }
+      res.json({ status: 'ok', content });
+    } catch (error: any) {
+      res.status(500).json({ status: 'error', message: error.message });
+    }
+  });
+
   // Health check endpoint
   app.get('/health', (_req, res) => {
     res.json({ status: 'ok', version: SERVER_VERSION, mode: 'http' });

@@ -21,19 +21,21 @@ team-ai-knowledge/
 ## 📌 Cho AI Agents: Đọc ngay những thứ này
 
 ### Bước 1 — Luôn làm đầu tiên
-Gọi tool `list_recent(days=3)` để biết team vừa làm gì gần đây.
+Gọi tool `danh_sach_phien_gan_day` (hoặc truy cập trang chủ / Explorer) để biết team vừa làm gì gần đây.
 
 ### Bước 2 — Tuỳ theo task
-| Task của bạn | Tra cứu ở đâu |
+| Task của bạn | Tra cứu bằng tool nào |
 |---|---|
-| Viết code mới | `get_pattern("tên-pattern")` |
-| Thay đổi kiến trúc | `get_decision(scope="...")` |
-| Debug bug | `find_lessons("mô tả lỗi")` |
-| Cần hiểu project | `get_context("tên-doc")` |
-| Tìm kiếm chung | `search_knowledge("từ khoá")` |
+| Viết code mới | `xem_mau_thiet_ke(patternId)` |
+| Thay đổi kiến trúc | `xem_quyet_dinh(decisionId)` |
+| Debug bug | `xem_bai_hoc(lessonId)` |
+| Cần hiểu project | `xem_ngu_canh_du_an(projectName)` |
+| Tìm kiếm chung | `tim_kiem_kien_thuc(query)` |
+| Cần đọc/sửa file tự do | Dùng `doc_tai_lieu(path)` và `sua_tai_lieu(...)` |
 
 ### Bước 3 — Cuối phiên (BẮT BUỘC)
-Khi user nói "tổng kết", "summarize", hoặc kết thúc → Gọi `save_session(...)`.
+Khi user nói "tổng kết", "summarize", hoặc kết thúc → Gọi `luu_phien_lam_viec(...)`.
+> **Lưu ý quan trọng**: Phải xác định rõ `epicOrFeature` (ví dụ: "Authentication", "Database", "UI") khi lưu phiên để hệ thống phân nhóm tự động.
 
 > Xem `AGENTS.md` để biết đầy đủ quy trình.
 

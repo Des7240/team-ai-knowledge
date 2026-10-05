@@ -9,6 +9,7 @@ Hệ thống Knowledge Base dùng chung giữa các AI tools (Cursor, Claude Cod
 - **Chia sẻ context** xuyên suốt giữa các AI agents
 - **Lưu trữ patterns, decisions, lessons** của team
 - **Theo dõi session** để không mất ngữ cảnh giữa các phiên làm việc
+- **Web UI trực quan** (Knowledge Base Explorer) để xem sơ đồ dự án và tài liệu dễ dàng
 
 ## 🏗️ Cấu trúc dự án
 
@@ -70,6 +71,8 @@ MCP Server hỗ trợ 2 chế độ, tự động nhận diện thông qua Envir
    - `GITHUB_TOKEN`: Fine-grained token có quyền đọc/ghi repo (Contents: Read & Write).
    - `GITHUB_OWNER`: Tên tài khoản hoặc tổ chức chứa repo (vd: `your-username`).
    - `GITHUB_REPO`: Tên repo (vd: `team-ai-knowledge`).
+
+> **💡 Trải nghiệm Web UI:** Khi server đã chạy (Local hoặc Render), bạn có thể truy cập `http://localhost:<PORT>/` hoặc `https://<YOUR_RENDER_URL>/` để mở giao diện **Knowledge Base Explorer**. Giao diện cho phép render Markdown cực đẹp và duyệt file dễ dàng!
 
 ### Cấu hình Client (.mcp.json)
 
