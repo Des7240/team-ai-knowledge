@@ -57,6 +57,7 @@ Khi user nói "tổng kết", "summarize", hoặc kết thúc → Gọi `luu_phi
 |---------|-----------|-------|
 | team-ai-knowledge | [`projects/team-ai-knowledge/`](./projects/team-ai-knowledge/) | Knowledge về bản thân hệ thống KB |
 | MT-GRMS | [`projects/MT-GRMS/`](./projects/MT-GRMS/) | Hệ thống quản lý bán lẻ tạp hóa đa khách hàng |
+| document-workspace-hub | [`projects/document-workspace-hub/`](./projects/document-workspace-hub/) | Hệ thống quản lý tài liệu và không gian làm việc |
 
 > Thêm project mới vào đây sau khi tạo.
 
@@ -86,4 +87,4 @@ Khi user nói "tổng kết", "summarize", hoặc kết thúc → Gọi `luu_phi
 
 ---
 
-*Cập nhật lần cuối: 2026-09-14 | Maintainer: Team Lead*
+*Cập nhật lần cuối: 2026-10-05 | Maintainer: Team Lead*

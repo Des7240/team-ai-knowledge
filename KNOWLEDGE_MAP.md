@@ -50,6 +50,7 @@ team-ai-knowledge/
 |---------|--------|-------|
 | [team-ai-knowledge](./projects/team-ai-knowledge/) | active | Knowledge về bản thân hệ thống KB |
 | [MT-GRMS](./projects/MT-GRMS/) | active | Hệ thống quản lý bán lẻ tạp hóa đa khách hàng |
+| [document-workspace-hub](./projects/document-workspace-hub/) | active | Hệ thống quản lý tài liệu và không gian làm việc |
 
 ---
 
