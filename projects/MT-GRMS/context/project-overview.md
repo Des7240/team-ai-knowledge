@@ -31,16 +31,15 @@ MT-GRMS cung cấp một hệ thống quản lý tinh gọn, tập trung xử l�
 
 ---
 
-## 3. Phạm vi Dự án (Project Scope - 26 Features)
+## 3. Phạm vi Dự án (Project Scope - 23 Features)
 
-Tổng hợp 26 tính năng chính chia thành các phân hệ lõi:
+Tổng hợp 23 tính năng chính chia thành các phân hệ lõi:
 1. **Quản lý Hàng hóa & Tồn kho**: Khởi tạo sản phẩm, quản lý đa đơn vị, lô hạn sử dụng FEFO (FE-02), kiểm kê kho (FE-04), điều chuyển kho liên chi nhánh (FE-15).
 2. **Mua hàng & Vận hành**: Đơn đặt hàng PO & Landed Cost (FE-05), xuất hủy nội bộ (FE-06), chi phí dịch vụ (FE-07).
 3. **Quầy POS & Thanh toán**: Bán hàng quét mã vạch siêu tốc (FE-12), tích hợp VietQR động (FE-13), đặt hàng trước (FE-14), hệ thống khuyến mãi & Voucher (FE-16).
 4. **Tài chính & CRM**: Khách hàng (FE-08), Nhà cung cấp (FE-09), Sổ quỹ tiền mặt (FE-17), Tính thuế hộ kinh doanh (FE-19), Báo cáo Lãi/Lỗ P&L (FE-10).
 5. **Nhân sự & Lương**: Quản lý ca làm việc, chấm công, tính lương và hoa hồng (FE-18).
-6. **SaaS Admin, AI & Bảo mật**: Phân quyền RBAC, xác thực 2FA (FE-11), gợi ý bán hàng bằng AI LLM (FE-21), quản trị tenant & gói cước (FE-22, 23, 25).
-7. **Omnichannel**: Tích hợp đối tác giao hàng GHN (FE-20), Mini Web Store bán hàng trực tuyến (FE-26).
+6. **SaaS Admin & Bảo mật**: Phân quyền RBAC, xác thực 2FA (FE-11), quản trị tenant & gói cước (FE-22, 23, 24, 25).
 
 ---
 

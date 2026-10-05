@@ -68,6 +68,43 @@ export function createToolHandlers(provider: DataProvider) {
   }
 
   /**
+   * Resolves and validates a project name against KNOWLEDGE_MAP.md.
+   * @param requestedName - The project name provided by the tool caller.
+   * @returns The exact project name to use.
+   */
+  async function resolveProjectName(requestedName: string): Promise<string> {
+    const mapDoc = await readMarkdown('KNOWLEDGE_MAP.md');
+    let validProjects: string[] = [];
+    if (mapDoc) {
+      const lines = mapDoc.content.split('\n');
+      for (const line of lines) {
+        if (line.includes('| [') && line.includes('](./projects/')) {
+          const match = line.match(/\|\s*\[(.*?)\]\(\.\/projects\/(.*?)\/\)/);
+          if (match && match[2]) {
+            validProjects.push(match[2].trim());
+          }
+        }
+      }
+    }
+
+    if (validProjects.length === 0) {
+      validProjects = ['MT-GRMS', 'document-workspace-hub', 'team-ai-knowledge'];
+    }
+
+    if (validProjects.includes(requestedName)) {
+      return requestedName;
+    }
+
+    for (const vp of validProjects) {
+      if (requestedName.toLowerCase().includes(vp.toLowerCase()) || vp.toLowerCase().includes(requestedName.toLowerCase())) {
+        return vp;
+      }
+    }
+
+    throw new Error(`Tên dự án không hợp lệ: "${requestedName}". Vui lòng chọn một trong các dự án sau: ${validProjects.join(', ')}.`);
+  }
+
+  /**
    * Handles xem_tong_quan — returns KB overview and navigation map.
    * @returns Overview content string.
    */
@@ -83,11 +120,12 @@ export function createToolHandlers(provider: DataProvider) {
    * @returns Project context content.
    */
   async function handleXemNguCanhDuAn(projectName: string): Promise<string> {
-    const doc = await readMarkdown(`projects/${projectName}/context/overview.md`);
+    const resolvedProject = await resolveProjectName(projectName);
+    const doc = await readMarkdown(`projects/${resolvedProject}/context/overview.md`);
     if (!doc) {
-      return `Project '${projectName}' context not found.`;
+      return `Project '${resolvedProject}' context not found.`;
     }
-    return `# Context: ${projectName}\n\n${doc.content}`;
+    return `# Context: ${resolvedProject}\n\n${doc.content}`;
   }
 
   /**
@@ -100,7 +138,8 @@ export function createToolHandlers(provider: DataProvider) {
     query: string,
     projectName?: string
   ): Promise<string> {
-    const matches = await searchMarkdownFiles(query, projectName);
+    const resolvedProject = projectName ? await resolveProjectName(projectName) : undefined;
+    const matches = await searchMarkdownFiles(query, resolvedProject);
     return matches.length
       ? JSON.stringify(matches, null, 2)
       : `No matches found for '${query}'.`;
@@ -173,10 +212,11 @@ export function createToolHandlers(provider: DataProvider) {
     summary: string;
   }): Promise<string> {
     const { projectName, title, goals, filesChanged, summary } = params;
+    const resolvedProject = await resolveProjectName(projectName);
 
     const date = new Date().toISOString().split('T')[0];
     const fileName = `${date}-${toSlug(title)}.md`;
-    const targetPath = `projects/${projectName}/sessions/${fileName}`;
+    const targetPath = `projects/${resolvedProject}/sessions/${fileName}`;
 
     const content = [
       '---',
@@ -367,10 +407,11 @@ export function createToolHandlers(provider: DataProvider) {
     summary: string;
   }): Promise<string> {
     const { projectName, title, completeness, correctness, coherence, constraints, blastRadius, summary } = params;
+    const resolvedProject = await resolveProjectName(projectName);
 
     const date = new Date().toISOString().split('T')[0];
     const fileName = `${date}-${toSlug(title)}.md`;
-    const targetPath = `projects/${projectName}/reviews/${fileName}`;
+    const targetPath = `projects/${resolvedProject}/reviews/${fileName}`;
 
     const content = [
       '---',
