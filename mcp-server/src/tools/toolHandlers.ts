@@ -219,6 +219,10 @@ export function createToolHandlers(provider: DataProvider) {
     const fileName = `${date}-${toSlug(title)}.md`;
     const targetPath = `projects/${resolvedProject}/sessions/${fileName}`;
 
+    if (await provider.fileExists(targetPath)) {
+      return `Error: Phiên làm việc với tiêu đề này đã tồn tại trong ngày (${targetPath}). Vui lòng đổi tiêu đề khác hoặc dùng tool 'sua_tai_lieu' để cập nhật nội dung có ghi log chi tiết.`;
+    }
+
     const content = [
       '---',
       `id: SES-${date}-${Math.floor(100 + Math.random() * 900)}`,
