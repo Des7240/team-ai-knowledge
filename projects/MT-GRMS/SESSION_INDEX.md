@@ -12,3 +12,6 @@
 - [2026-09-21 - 2026-09-21-phan-tich-yeu-cau-bai-toan-boi-canh-nghiep-vu-va-thiet-ke-context-diagram-he-thong-mt-grms](./sessions/2026-09-21-phan-tich-yeu-cau-bai-toan-boi-canh-nghiep-vu-va-thiet-ke-context-diagram-he-thong-mt-grms.md)
 - [2026-09-21 - 2026-09-21-lam-ro-requirement-va-scope-cho-module-ke-toan-crm](./sessions/2026-09-21-lam-ro-requirement-va-scope-cho-module-ke-toan-crm.md)
 
+
+## [Epic] Finance_Tax_Use_Cases
+- [2026-10-06 - Phân tích và Đặc tả Use Case phân hệ Tài chính - Thuế](./sessions/2026-10-06-phan-tich-va-dac-ta-use-case-phan-he-tai-chinh-thue.md)
