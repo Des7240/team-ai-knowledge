@@ -1,3 +1,10 @@
+---
+changelog:
+  - date: '2026-10-12T15:13:17.622Z'
+    author: Tech Lead
+    reason: Đăng ký dự án ai-team-kit vào Navigation Map
+    impact: Thêm dự án ai-team-kit vào danh sách Projects trong KNOWLEDGE_MAP.md
+---
 # KNOWLEDGE_MAP.md — Bản đồ Knowledge Base
 
 > Dùng file này để hiểu toàn bộ cấu trúc KB và quan hệ giữa các docs.
@@ -48,6 +55,7 @@ team-ai-knowledge/
 
 | Project | Status | Mô tả |
 |---------|--------|-------|
+| [ai-team-kit](./projects/ai-team-kit/) | active | Bộ công cụ AI điều phối trung tâm (Central Brain, MCP Server, SEP Workflow) |
 | [team-ai-knowledge](./projects/team-ai-knowledge/) | active | Knowledge về bản thân hệ thống KB |
 | [MT-GRMS](./projects/MT-GRMS/) | active | Hệ thống quản lý bán lẻ tạp hóa đa khách hàng |
 | [document-workspace-hub](./projects/document-workspace-hub/) | active | Hệ thống quản lý tài liệu và không gian làm việc |
