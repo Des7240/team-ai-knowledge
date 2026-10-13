@@ -21,3 +21,6 @@
 
 ## [Epic] undefined
 - [2026-10-13 - Tích hợp Google Apps Script Web App và MCP tool tự động đồng bộ 5 file Google Sheets kiểm thử (Report 5.1 - 5.5)](./sessions/2026-10-13-tich-hop-google-apps-script-web-app-va-mcp-tool-tu-dong-dong-bo-5-file-google-sheets-kiem-thu-report-5-1-5-5.md)
+
+## [Epic] FE-08 Customer CRM & Shared UI
+- [2026-10-13 - Hoàn thiện phân hệ FE-08 Customer CRM, sửa lỗi Google Sheets sync và chuẩn hóa component TablePagination](./sessions/2026-10-13-hoan-thien-phan-he-fe-08-customer-crm-sua-loi-google-sheets-sync-va-chuan-hoa-component-tablepagination.md)
