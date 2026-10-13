@@ -1,8 +1,17 @@
 ---
 title: Project Overview
-description: Tổng quan dự án MT-GRMS, mục tiêu, GAPs và phạm vi tính năng.
+description: 'Tổng quan dự án MT-GRMS, mục tiêu, GAPs và phạm vi tính năng.'
+changelog:
+  - date: '2026-10-13T07:09:37.482Z'
+    author: Nguyễn Trường An / AI-Agent
+    reason: >-
+      Cập nhật phạm vi trách nhiệm thành viên: Nguyễn Trường An đã bỏ và không
+      phụ trách FE-26.3
+    impact: >-
+      Bổ sung mục 5 Phân công Trách nhiệm Nhóm vào Project Overview, làm rõ
+      Nguyễn Trường An phụ trách 5 tính năng FE-07, FE-08, FE-10, FE-17, FE-19
+      và đã loại bỏ FE-26.3.
 ---
-
 # 🚀 Dự án MT-GRMS (Multi-Tenant Grocery Retail Management System)
 
 **Tên tiếng Việt:** Hệ Thống Cung Cấp Dịch Vụ Quản Lý Tạp Hóa Bán Lẻ
@@ -52,4 +61,20 @@ Hệ thống bao gồm tối thiểu 20-22 thực thể nghiệp vụ cốt lõi
 - `Customers`, `Suppliers`, `CashbookTransactions`, `ServiceExpenses` (Đối tác & Dòng tiền)
 - `Subscriptions`, `AuditLogs` (SaaS & Hệ thống)
 
-*Cập nhật lần cuối từ: Báo cáo Report-1, Report-2, Report-3 (SRS).*
+---
+
+## 5. Phân công Trách nhiệm Nhóm (Team Responsibilities)
+
+- **Nguyễn Minh Tâm (Lead BA):** Khung SRS, Context Diagram, phân hệ Bán lẻ đa kênh, Danh mục hàng hóa & Nhân sự (FE-01, FE-15, FE-18, FE-20, FE-26).
+- **Nguyễn Long Nhật (PM/Architect):** Kiến trúc SaaS, Bảo mật, AI Recommender, Background Jobs (FE-11, FE-21, FE-22, FE-23, FE-24, FE-25).
+- **Nguyễn Trường An (Backend/DB):** Chịu trách nhiệm Sơ đồ ERD, API bên ngoài, toàn bộ phân hệ Tài chính – CRM – Thuế:
+  - **FE-07:** Chi phí dịch vụ (*Service Expenses*)
+  - **FE-08:** Khách hàng & Công nợ (*Customer CRM & Accounts Receivable*)
+  - **FE-10:** Báo cáo Lãi/Lỗ P&L & Dashboard (*Profit & Loss Reports*)
+  - **FE-17:** Sổ quỹ tiền mặt (*Cashbook Ledger*)
+  - **FE-19:** Tính thuế hộ kinh doanh & Hóa đơn điện tử (*Household Business Tax & E-Invoices*)
+  - *(Ghi chú phạm vi: Đã chính thức loại bỏ và không phụ trách FE-26.3).*
+- **Đặng Đỗ Minh Đức (Kho vận/FEFO):** Luồng Nhập hàng, Phân bổ chi phí, luồng Kho vận & Thuật toán FEFO (FE-02, FE-04, FE-05, FE-06, FE-09).
+- **Nguyễn Bá Sơn (Frontend/UI):** Thiết kế Screen Inventory, phân hệ Quầy POS, Khuyến mãi, Yêu cầu phi chức năng và mockups (FE-03, FE-12, FE-13, FE-14, FE-16).
+
+*Cập nhật lần cuối từ: Báo cáo Report-1, Report-2, Report-3 (SRS) và xác nhận phân công trách nhiệm thành viên.*
