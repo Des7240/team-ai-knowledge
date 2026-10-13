@@ -18,3 +18,6 @@
 
 ## [Epic] Team_Scope_Management
 - [2026-10-13 - Cap nhat pham vi phu trach cua Nguyen Truong An - loai bo FE-26.3](./sessions/2026-10-13-cap-nhat-pham-vi-phu-trach-cua-nguyen-truong-an-loai-bo-fe-26-3.md)
+
+## [Epic] undefined
+- [2026-10-13 - Tích hợp Google Apps Script Web App và MCP tool tự động đồng bộ 5 file Google Sheets kiểm thử (Report 5.1 - 5.5)](./sessions/2026-10-13-tich-hop-google-apps-script-web-app-va-mcp-tool-tu-dong-dong-bo-5-file-google-sheets-kiem-thu-report-5-1-5-5.md)
