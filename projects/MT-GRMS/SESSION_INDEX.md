@@ -15,3 +15,6 @@
 
 ## [Epic] Finance_Tax_Use_Cases
 - [2026-10-06 - Phân tích và Đặc tả Use Case phân hệ Tài chính - Thuế](./sessions/2026-10-06-phan-tich-va-dac-ta-use-case-phan-he-tai-chinh-thue.md)
+
+## [Epic] Team_Scope_Management
+- [2026-10-13 - Cap nhat pham vi phu trach cua Nguyen Truong An - loai bo FE-26.3](./sessions/2026-10-13-cap-nhat-pham-vi-phu-trach-cua-nguyen-truong-an-loai-bo-fe-26-3.md)
