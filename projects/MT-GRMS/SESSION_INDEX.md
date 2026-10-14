@@ -24,3 +24,6 @@
 
 ## [Epic] FE-08 Customer CRM & Shared UI
 - [2026-10-13 - Hoàn thiện phân hệ FE-08 Customer CRM, sửa lỗi Google Sheets sync và chuẩn hóa component TablePagination](./sessions/2026-10-13-hoan-thien-phan-he-fe-08-customer-crm-sua-loi-google-sheets-sync-va-chuan-hoa-component-tablepagination.md)
+
+## [Epic] Finance-Cashflow-Tax-Architecture
+- [2026-10-14 - Phân tích ma trận móc nối & chu trình tài chính khép kín FE-07, FE-08, FE-10, FE-17, FE-19](./sessions/2026-10-14-phan-tich-ma-tran-moc-noi-chu-trinh-tai-chinh-khep-kin-fe-07-fe-08-fe-10-fe-17-fe-19.md)
