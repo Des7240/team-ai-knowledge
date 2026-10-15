@@ -27,3 +27,6 @@
 
 ## [Epic] Finance-Cashflow-Tax-Architecture
 - [2026-10-14 - Phân tích ma trận móc nối & chu trình tài chính khép kín FE-07, FE-08, FE-10, FE-17, FE-19](./sessions/2026-10-14-phan-tich-ma-tran-moc-noi-chu-trinh-tai-chinh-khep-kin-fe-07-fe-08-fe-10-fe-17-fe-19.md)
+
+## [Epic] FE-07-FE-08-Finance-Architecture
+- [2026-10-15 - Hoàn thiện UI FE-07, Resolve Merge Conflict từ dev, Tạo Simulator Dòng Tiền Động và Phân Tích Nghiệp Vụ Thuế TT40](./sessions/2026-10-15-hoan-thien-ui-fe-07-resolve-merge-conflict-tu-dev-tao-simulator-dong-tien-dong-va-phan-tich-nghiep-vu-thue-tt40.md)
