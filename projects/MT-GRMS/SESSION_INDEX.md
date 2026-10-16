@@ -30,3 +30,6 @@
 
 ## [Epic] FE-07-FE-08-Finance-Architecture
 - [2026-10-15 - Hoàn thiện UI FE-07, Resolve Merge Conflict từ dev, Tạo Simulator Dòng Tiền Động và Phân Tích Nghiệp Vụ Thuế TT40](./sessions/2026-10-15-hoan-thien-ui-fe-07-resolve-merge-conflict-tu-dev-tao-simulator-dong-tien-dong-va-phan-tich-nghiep-vu-thue-tt40.md)
+
+## [Epic] FE-FINANCE-ARCHITECTURE
+- [2026-10-16 - Đặc tả chi tiết thực thể ERD và xác nhận 8 quyết định nghiệp vụ phân hệ tài chính MT-GRMS](./sessions/2026-10-16-dac-ta-chi-tiet-thuc-the-erd-va-xac-nhan-8-quyet-dinh-nghiep-vu-phan-he-tai-chinh-mt-grms.md)
