@@ -33,3 +33,6 @@
 
 ## [Epic] FE-FINANCE-ARCHITECTURE
 - [2026-10-16 - Đặc tả chi tiết thực thể ERD và xác nhận 8 quyết định nghiệp vụ phân hệ tài chính MT-GRMS](./sessions/2026-10-16-dac-ta-chi-tiet-thuc-the-erd-va-xac-nhan-8-quyet-dinh-nghiep-vu-phan-he-tai-chinh-mt-grms.md)
+
+## [Epic] FE-Financial-Tax-Flows
+- [2026-10-26 - Chuẩn hóa Main Business Flow AS-IS và TO-BE phân hệ Tài chính, Sổ quỹ và Thuế (FE-07, FE-08, FE-10, FE-17, FE-19)](./sessions/2026-10-26-chuan-hoa-main-business-flow-as-is-va-to-be-phan-he-tai-chinh-so-quy-va-thue-fe-07-fe-08-fe-10-fe-17-fe-19.md)
